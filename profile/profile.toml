@@ -1,0 +1,63 @@
+# Fashion Scout: style profile
+# This is the one file that describes you. The weekly run reads it first.
+# Edit freely (the GitHub app works fine on a phone). Leave a value as "" or 0 if unknown.
+# Things the scout LEARNS (brand sizes, liked colours, skipped brands) live in data/history.json, not here.
+
+[me]
+section = "men"
+climate = "north-india"        # north-india | humid-coastal | mild-plateau
+height_cm = 0
+build = ""                     # slim | athletic | average | broad | heavier
+notes = ""                     # anything about your body/fit worth knowing, e.g. "broad shoulders, short torso"
+
+[sizes]
+top = ""                       # letter size for tees/shirts/knits: XS S M L XL XXL
+chest_in = 0                   # Indian shirt sizing often uses 38/40/42/44 (chest inches)
+waist_in = 0                   # trousers/jeans waist, e.g. 32
+inseam_in = 0
+shoe_uk = 0                    # UK size, e.g. 9
+
+# Per-brand exceptions you already know. The scout also learns these from "bought" replies.
+# Example:  [sizes.brand."Snitch"]  top = "L"
+[sizes.brand]
+
+[fit]
+tops = ["regular", "relaxed", "oversized", "boxy"]
+bottoms = ["straight", "relaxed", "tapered", "regular", "baggy"]
+avoid = ["skinny", "super skinny", "muscle fit", "extra slim"]
+
+[style]
+vibes = ["minimal", "smart-casual", "streetwear"]
+colours_love = ["white", "off-white", "black", "navy", "grey", "olive", "beige", "brown", "cream", "charcoal", "khaki", "sage"]
+colours_ok = ["blue", "green", "maroon", "rust", "tan", "mustard"]
+colours_avoid = ["neon", "fluorescent"]
+patterns_ok = ["solid", "textured", "stripes", "checks"]
+# Hard dealbreakers: anything matching these words is dropped.
+avoid = ["distressed", "ripped", "sequin", "satin", "shiny", "metallic", "anime", "marvel", "disney", "cartoon"]
+# Soft dislikes: allowed, but pushed down.
+dislike = ["slogan", "typography", "all over print", "big logo", "graphic print"]
+
+[quality]
+# "Price must be justified by quality. No luxury."
+philosophy = "value-for-quality"
+hard_cap_inr = 9000            # per item; above this is treated as luxury and never shown
+footwear_cap_inr = 10000
+prefer = ["100% cotton", "linen", "merino", "wool", "oxford", "twill", "selvedge", "corduroy", "flannel", "french terry", "pique", "heavyweight", "supima", "full grain leather", "goodyear welt"]
+avoid_materials = ["acrylic", "pu leather", "faux leather"]
+
+[shopping]
+avoid_stores = []
+prefer_stores = []
+picks_per_week = 5             # 4 focus picks + 1 wildcard
+
+# What you already own. The scout pairs new picks with these and fills gaps.
+# Add/remove lines any time. category: shirt tshirt polo overshirt sweater sweatshirt jacket blazer
+#                                        trousers chinos jeans joggers shorts sneakers loafers boots
+[[wardrobe]]
+item = "example: white sneakers"
+category = "sneakers"
+colour = "white"
+
+[delivery]
+email = ""                     # filled at setup
+weekday = "Sunday"

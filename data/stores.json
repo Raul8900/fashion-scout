@@ -1,0 +1,413 @@
+{
+  "_doc": "Store registry. kind=shopify: live catalog + per-size stock via /products.json (verified). kind=browser: product pages read in headless Chromium via JSON-LD (verify only; discovered through web search). kind=search_only: bot-blocked from cloud servers; may appear only as clearly labelled unverified picks. tier is a price/quality hint, not a filter. enabled=false keeps a store on file without scanning it.",
+  "stores": [
+    {
+      "name": "Andamen",
+      "domain": "www.andamen.com",
+      "kind": "shopify",
+      "tier": "premium",
+      "vibes": [
+        "minimal",
+        "smart-casual"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Rare Rabbit",
+      "domain": "www.thehouseofrare.com",
+      "kind": "shopify",
+      "tier": "premium",
+      "vibes": [
+        "minimal",
+        "smart-casual"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Blackberrys",
+      "domain": "www.blackberrys.com",
+      "kind": "shopify",
+      "tier": "premium",
+      "vibes": [
+        "smart-casual"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "The Pant Project",
+      "domain": "www.thepantproject.com",
+      "kind": "shopify",
+      "tier": "premium",
+      "vibes": [
+        "smart-casual",
+        "minimal"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Levi's India",
+      "domain": "www.levi.in",
+      "kind": "shopify",
+      "tier": "mid",
+      "vibes": [
+        "minimal",
+        "streetwear"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Fugazee",
+      "domain": "www.fugazee.com",
+      "kind": "shopify",
+      "tier": "mid",
+      "vibes": [
+        "streetwear",
+        "minimal"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Bluorng",
+      "domain": "www.bluorng.com",
+      "kind": "shopify",
+      "tier": "premium",
+      "vibes": [
+        "streetwear"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Jaywalking",
+      "domain": "www.jaywalking.in",
+      "kind": "shopify",
+      "tier": "premium",
+      "vibes": [
+        "streetwear"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "The Bear House",
+      "domain": "thebearhouse.com",
+      "kind": "shopify",
+      "tier": "mid",
+      "vibes": [
+        "minimal",
+        "smart-casual",
+        "streetwear"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Jack & Jones",
+      "domain": "www.jackjones.in",
+      "kind": "shopify",
+      "tier": "mid",
+      "vibes": [
+        "streetwear",
+        "minimal"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Celio",
+      "domain": "www.celio.in",
+      "kind": "shopify",
+      "tier": "mid",
+      "vibes": [
+        "minimal",
+        "smart-casual"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Mr Button",
+      "domain": "www.mrbutton.in",
+      "kind": "shopify",
+      "tier": "mid",
+      "vibes": [
+        "smart-casual"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "U.S. Polo Assn.",
+      "domain": "www.uspoloassn.in",
+      "kind": "shopify",
+      "tier": "mid",
+      "vibes": [
+        "smart-casual"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Jade Blue",
+      "domain": "www.jadeblue.com",
+      "kind": "shopify",
+      "tier": "premium",
+      "vibes": [
+        "smart-casual"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Nicobar",
+      "domain": "www.nicobar.com",
+      "kind": "shopify",
+      "tier": "premium",
+      "vibes": [
+        "minimal"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Snitch",
+      "domain": "www.snitch.co.in",
+      "kind": "shopify",
+      "tier": "value",
+      "vibes": [
+        "streetwear",
+        "minimal"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "The Indian Garage Co",
+      "domain": "www.tigc.in",
+      "kind": "shopify",
+      "tier": "value",
+      "vibes": [
+        "minimal",
+        "streetwear"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Wrogn",
+      "domain": "www.wrogn.com",
+      "kind": "shopify",
+      "tier": "value",
+      "vibes": [
+        "streetwear"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Powerlook",
+      "domain": "www.powerlook.in",
+      "kind": "shopify",
+      "tier": "value",
+      "vibes": [
+        "streetwear"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Bonkers Corner",
+      "domain": "www.bonkerscorner.com",
+      "kind": "shopify",
+      "tier": "value",
+      "vibes": [
+        "streetwear"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Nobero",
+      "domain": "www.nobero.com",
+      "kind": "shopify",
+      "tier": "value",
+      "vibes": [
+        "minimal",
+        "streetwear"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Campus Sutra",
+      "domain": "www.campussutra.com",
+      "kind": "shopify",
+      "tier": "value",
+      "vibes": [
+        "streetwear"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Dennis Lingo",
+      "domain": "www.dennislingo.com",
+      "kind": "shopify",
+      "tier": "value",
+      "vibes": [
+        "minimal",
+        "streetwear"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Monkstory",
+      "domain": "www.monkstory.com",
+      "kind": "shopify",
+      "tier": "mid",
+      "vibes": [
+        "smart-casual"
+      ],
+      "enabled": true,
+      "only": "footwear"
+    },
+    {
+      "name": "Escaro",
+      "domain": "www.escaro.in",
+      "kind": "shopify",
+      "tier": "premium",
+      "vibes": [
+        "smart-casual"
+      ],
+      "enabled": true,
+      "only": "footwear"
+    },
+    {
+      "name": "Thaely",
+      "domain": "www.thaely.com",
+      "kind": "shopify",
+      "tier": "mid",
+      "vibes": [
+        "streetwear",
+        "minimal"
+      ],
+      "enabled": true,
+      "only": "footwear"
+    },
+    {
+      "name": "7-10",
+      "domain": "www.seventen.in",
+      "kind": "shopify",
+      "tier": "mid",
+      "vibes": [
+        "streetwear"
+      ],
+      "enabled": true,
+      "only": "footwear"
+    },
+    {
+      "name": "Gully Labs",
+      "domain": "www.gullylabs.com",
+      "kind": "shopify",
+      "tier": "mid",
+      "vibes": [
+        "streetwear",
+        "minimal"
+      ],
+      "enabled": true,
+      "only": "footwear"
+    },
+    {
+      "name": "Neeman's",
+      "domain": "www.neemans.com",
+      "kind": "shopify",
+      "tier": "mid",
+      "vibes": [
+        "minimal"
+      ],
+      "enabled": true,
+      "only": "footwear"
+    },
+    {
+      "name": "Fabindia",
+      "domain": "www.fabindia.com",
+      "kind": "shopify",
+      "tier": "mid",
+      "vibes": [
+        "ethnic"
+      ],
+      "enabled": false
+    },
+    {
+      "name": "Flipkart",
+      "domain": "www.flipkart.com",
+      "kind": "browser",
+      "tier": "mixed",
+      "vibes": [],
+      "enabled": true
+    },
+    {
+      "name": "Tata CLiQ",
+      "domain": "www.tatacliq.com",
+      "kind": "browser",
+      "tier": "mixed",
+      "vibes": [],
+      "enabled": true
+    },
+    {
+      "name": "Marks & Spencer",
+      "domain": "www.marksandspencer.in",
+      "kind": "browser",
+      "tier": "mid",
+      "vibes": [
+        "minimal",
+        "smart-casual"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "The Souled Store",
+      "domain": "www.thesouledstore.com",
+      "kind": "browser",
+      "tier": "value",
+      "vibes": [
+        "streetwear"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Myntra",
+      "domain": "www.myntra.com",
+      "kind": "search_only",
+      "tier": "mixed",
+      "vibes": [],
+      "enabled": true
+    },
+    {
+      "name": "Ajio",
+      "domain": "www.ajio.com",
+      "kind": "search_only",
+      "tier": "mixed",
+      "vibes": [],
+      "enabled": true
+    },
+    {
+      "name": "Uniqlo India",
+      "domain": "www.uniqlo.com",
+      "kind": "search_only",
+      "tier": "mid",
+      "vibes": [
+        "minimal"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "H&M India",
+      "domain": "www2.hm.com",
+      "kind": "search_only",
+      "tier": "value",
+      "vibes": [],
+      "enabled": true
+    },
+    {
+      "name": "Zara India",
+      "domain": "www.zara.com",
+      "kind": "search_only",
+      "tier": "mid",
+      "vibes": [],
+      "enabled": true
+    },
+    {
+      "name": "Amazon India",
+      "domain": "www.amazon.in",
+      "kind": "search_only",
+      "tier": "mixed",
+      "vibes": [],
+      "enabled": true
+    }
+  ]
+}
