@@ -40,8 +40,7 @@ def seen_urls(h: dict) -> set[str]:
 
 def weight_keys(item: dict) -> list[str]:
     keys = [f"store:{item.get('store')}", f"cat:{item.get('category')}"]
-    keys += [f"colour:{c}" for c in (item.get("colours") or [])[:2]]
-    return keys
+    return keys  # colour is deliberately NOT learned: the user wants no colour bias
 
 
 def apply_verdict(h: dict, item_id: str, verdict: str, note: str = "", size: str | None = None) -> None:
@@ -58,6 +57,10 @@ def apply_verdict(h: dict, item_id: str, verdict: str, note: str = "", size: str
             w[k] = round(w.get(k, 0) - VERDICT_DELTA[prev], 3)
     for k in weight_keys(it):
         w[k] = round(max(-3.0, min(3.0, w.get(k, 0) + VERDICT_DELTA.get(verdict, 0))), 3)
+    if verdict == "bought":
+        from .capsule import fill
+        from datetime import date as _d
+        fill(h, item_id, it, date=_d.today().isoformat())
     if verdict == "bought" and size:
         from .sizing import size_kind
         kind = size_kind(it.get("category", ""))

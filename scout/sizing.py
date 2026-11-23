@@ -22,23 +22,30 @@ def size_kind(category: str) -> str:
     return "top"
 
 
+def _as_list(v) -> list:
+    if v in (None, "", 0, []):
+        return []
+    return list(v) if isinstance(v, (list, tuple)) else [v]
+
+
 def wanted_size(profile: dict, category: str, store_name: str, learned: dict | None = None) -> dict:
-    """Return {'kind', 'letter', 'number'} the user wears for this category at this store."""
+    """Return {'kind', 'letters': [...], 'numbers': [...]}: ANY of these is acceptable.
+    The profile may list a range (top = ["M", "L"]); a learned/brand size narrows it for that store."""
     sz = profile.get("sizes", {})
     kind = size_kind(category)
     brand = dict(sz.get("brand", {}).get(store_name, {}))
     brand.update((learned or {}).get(store_name, {}))
+    tops = [_ALIASES.get(str(x).upper(), str(x).upper()) for x in _as_list(brand.get("top") or sz.get("top"))]
     if kind == "shoe":
-        n = brand.get("shoe_uk") or sz.get("shoe_uk") or 0
-        return {"kind": kind, "letter": None, "number": float(n) if n else None}
+        nums = [float(x) for x in _as_list(brand.get("shoe_uk") or sz.get("shoe_uk"))]
+        return {"kind": kind, "letters": [], "numbers": nums}
     if kind == "waist":
-        n = brand.get("waist_in") or sz.get("waist_in") or 0
-        letter = brand.get("bottom") or None
-        return {"kind": kind, "letter": letter, "number": float(n) if n else None}
-    letter = (brand.get("top") or sz.get("top") or "").upper() or None
-    letter = _ALIASES.get(letter, letter) if letter else None
-    n = brand.get("chest_in") or sz.get("chest_in") or (LETTER_TO_CHEST.get(letter) if letter else None)
-    return {"kind": kind, "letter": letter, "number": float(n) if n else None}
+        nums = [float(x) for x in _as_list(brand.get("waist_in") or sz.get("waist_in"))]
+        # joggers/cargos are often sold S/M/L: fall back to the top letter sizes
+        return {"kind": kind, "letters": [str(x).upper() for x in _as_list(brand.get("bottom"))] or tops, "numbers": nums}
+    chest = [float(x) for x in _as_list(brand.get("chest_in") or sz.get("chest_in"))] or \
+        [float(LETTER_TO_CHEST[l]) for l in tops if l in LETTER_TO_CHEST]
+    return {"kind": kind, "letters": tops, "numbers": chest}
 
 
 def _letter_of(label: str) -> str | None:
@@ -58,28 +65,28 @@ def _numbers_of(label: str) -> list[float]:
 def label_matches(label: str, want: dict) -> bool:
     if not label:
         return False
+    wn = want.get("numbers") or []
     if want["kind"] == "shoe":
-        if want["number"] is None:
+        if not wn:
             return False
         up = label.upper()
+        nums = _numbers_of(label)
         if "EU" in up and "UK" not in up:
             # EU ~= UK + 33 (rough), accept within half a size
-            return any(abs((n - 33) - want["number"]) <= 0.5 for n in _numbers_of(label))
-        nums = _numbers_of(label)
+            return any(abs((n - 33) - w) <= 0.5 for n in nums for w in wn)
         # "UK 9", "9", "UK9 / EU43": first number is UK by convention on Indian sites
-        return bool(nums) and abs(nums[0] - want["number"]) < 0.01
+        return bool(nums) and any(abs(nums[0] - w) < 0.01 for w in wn)
     letter = _letter_of(label)
-    if want["letter"] and letter:
-        return letter == want["letter"]
+    if letter:
+        return letter in (want.get("letters") or [])
     nums = _numbers_of(label)
-    if want["number"] and nums:
-        return any(abs(n - want["number"]) < 0.01 for n in nums)
-    return False
+    return bool(wn and nums) and any(abs(n - w) < 0.01 for n in nums for w in wn)
 
 
 def size_status(sizes: dict[str, bool], want: dict) -> tuple[str, str | None]:
-    """-> (status, matched_label). status: in_stock | sold_out | not_offered | unknown_profile | no_sizes"""
-    if want["letter"] is None and want["number"] is None:
+    """-> (status, label). status: in_stock | sold_out | not_offered | unknown_profile | no_sizes.
+    label lists every acceptable size that is in stock, e.g. "M, L"."""
+    if not want.get("letters") and not want.get("numbers"):
         return "unknown_profile", None
     if not sizes:
         return "no_sizes", None
@@ -89,7 +96,7 @@ def size_status(sizes: dict[str, bool], want: dict) -> tuple[str, str | None]:
     hits = [(lbl, ok) for lbl, ok in sizes.items() if label_matches(lbl, want)]
     if not hits:
         return "not_offered", None
-    for lbl, ok in hits:
-        if ok:
-            return "in_stock", lbl
-    return "sold_out", hits[0][0]
+    good = [lbl for lbl, ok in hits if ok]
+    if good:
+        return "in_stock", ", ".join(good)
+    return "sold_out", ", ".join(l for l, _ in hits)

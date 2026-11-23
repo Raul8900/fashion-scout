@@ -71,6 +71,9 @@ def score(text: str, category: str) -> dict:
     """-> {'score': 0-10, 'known': bool, 'reasons': [...], 'composition': {...}, 'gsm': int|None}"""
     t = re.sub(r"\s+", " ", text.lower())
     group = CATEGORY_GROUP.get(category, "other")
+    # Insulated/weather outerwear: a synthetic shell is the RIGHT material, judge it on outerwear signals instead.
+    if category == "jacket" and re.search(r"puffer|quilted|padded|parka|gilet|gillet|windcheater|insulated|down[- ]filled|rain ?jacket|shell", t):
+        return _outerwear(t)
     pts, reasons, seen = 0.0, [], set()
     for pat, p, label, groups in SIGNALS + PENALTIES:
         if groups and group not in groups:
@@ -120,3 +123,32 @@ def score(text: str, category: str) -> dict:
     final = 5.0 + 5.0 * math.tanh(pts / 5.0)
     return {"score": round(final, 1), "known": known, "reasons": reasons,
             "composition": comp, "gsm": gsm}
+
+
+OUTERWEAR = [
+    (r"\b(duck|goose) down\b|\bdown[- ](fill(ed)?|insulat\w+|padding|jacket|puffer)\b|\bfilled with down\b|\bdown and feather", 2.0, "down fill"),
+    (r"\b\d{2,3}\s*gsm\b.*(fill|padding|wadding)|(fill|padding|wadding).*\b\d{2,3}\s*gsm\b|\bfill power\b", 1.2, "stated fill weight"),
+    (r"water[- ]?(resistant|repellent|proof)|\bdwr\b|wind[- ]?(resistant|proof)", 1.2, "weather resistant"),
+    (r"\bykk\b|\briri\b|two[- ]way zip", 0.8, "quality zips"),
+    (r"\blined\b|\blining\b|sherpa|fleece[- ]lined|\bbrushed\b", 0.6, "lined"),
+    (r"\bhood\b|\bhooded\b|stand collar|high neck|storm (flap|cuff)|ribbed cuffs?|elastic(ated)? cuffs?", 0.5, "cold-proof details"),
+    (r"\breversible\b", 0.4, "reversible"),
+    (r"\bpackable\b|\blightweight\b", 0.3, "packable/light"),
+    (r"\bnylon\b|\bpolyamide\b|\bripstop\b", 0.5, "nylon/ripstop shell"),
+]
+
+
+def _outerwear(t: str) -> dict:
+    pts, reasons = 0.0, []
+    for pat, p, label in OUTERWEAR:
+        if re.search(pat, t):
+            pts += p
+            reasons.append("+" + label)
+    if re.search(r"\bsleeveless\b|\bgilet\b|\bvest\b", t):
+        reasons.append("~sleeveless")
+    known = bool(re.search(r"polyester|nylon|polyamide|cotton|down|wadding|fill|padding", t))
+    if not known:
+        pts -= 1.0
+        reasons.append("-shell/fill not stated")
+    return {"score": round(5.0 + 5.0 * math.tanh(pts / 5.0) + 0.5, 1), "known": known, "reasons": reasons,
+            "composition": composition(t), "gsm": None}

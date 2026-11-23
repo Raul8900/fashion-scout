@@ -7,8 +7,8 @@ import statistics
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 
-from . import quality, sizing
-from .classify import CATEGORY_GROUP, colour_family, norm
+from . import capsule, quality, sizing
+from .classify import CATEGORY_GROUP, norm
 
 WEARABLE_GROUPS = {"tops", "layers", "bottoms", "footwear"}
 
@@ -62,8 +62,6 @@ def hard_filter(item: dict, profile: dict, seen: set[str], learned_sizes: dict) 
     fit_bad = _has(profile.get("fit", {}).get("avoid", []), head)
     if fit_bad:
         return False, f"fit: {fit_bad[0]}"
-    if set(item.get("colours", [])[:1]) & set(st.get("colours_avoid", [])):
-        return False, "colour avoided"
     want = sizing.wanted_size(profile, item["category"], item["store"], learned_sizes)
     status, label = sizing.size_status(item.get("sizes") or {}, want)
     item["size_status"], item["size_label"] = status, label
@@ -72,7 +70,7 @@ def hard_filter(item: dict, profile: dict, seen: set[str], learned_sizes: dict) 
     return True, ""
 
 
-def score(item: dict, profile: dict, plan: dict, learned: dict, ref_price: dict[str, float], wardrobe_cats: set[str]) -> dict:
+def score(item: dict, profile: dict, plan: dict, learned: dict, ref_price: dict[str, float], history: dict) -> dict:
     st = profile.get("style", {})
     text = _text(item)
     title = norm(item.get("title", ""))
@@ -94,7 +92,6 @@ def score(item: dict, profile: dict, plan: dict, learned: dict, ref_price: dict[
     if ratio < 0.45 and not q["known"]:
         v -= 1.0
     br["value"] = round(max(-3, min(2, v)), 2)
-    br["tier"] = {"premium": 0.4, "mid": 0.2}.get(item.get("tier"), 0.0)
     item["price_vs_median"] = round(ratio, 2)
 
     vibe = 0.0
@@ -110,17 +107,13 @@ def score(item: dict, profile: dict, plan: dict, learned: dict, ref_price: dict[
     if dis:
         notes.append("has: " + ", ".join(dis))
 
-    cols = item.get("colours", [])
-    c = 0.0
-    if cols:
-        main = cols[0]
-        if main in st.get("colours_love", []):
-            c = 1.0
-        elif main in st.get("colours_ok", []):
-            c = 0.3
-        elif colour_family(main) in ("bright", "pastel"):
-            c = -0.8
-    br["colour"] = c
+    # Fit: user likes things a bit loose, never tight. (Colour and brand deliberately carry no weight.)
+    fit = profile.get("fit", {})
+    loose = _has(fit.get("prefer", []), text)
+    tight = _has(fit.get("soft_avoid", []), title + " " + norm(" ".join(item.get("tags", []))))
+    br["fit"] = round(min(1.0, 0.5 * len(loose)) - 1.2 * min(1, len(tight)), 2)
+    if tight:
+        notes.append("cut: " + tight[0])
 
     sp = plan.get("season_prefs", {})
     s = 0.5 * len(_has(sp.get("boost", []), text)) - 0.9 * len(_has(sp.get("penalty", []), title))
@@ -129,10 +122,16 @@ def score(item: dict, profile: dict, plan: dict, learned: dict, ref_price: dict[
     br["focus"] = 2.0 if item.get("group") == plan.get("focus_group") else 0.0
 
     w = learned.get("weights", {})
-    br["learned"] = round(sum(w.get(k, 0) for k in [f"store:{item['store']}", f"cat:{item['category']}"] +
-                              [f"colour:{x}" for x in cols[:2]]), 2)
+    br["learned"] = round(sum(w.get(k, 0) for k in [f"store:{item['store']}", f"cat:{item['category']}"]), 2)
 
-    br["gap"] = 0.4 if item["category"] not in wardrobe_cats else 0.0
+    # Wardrobe from scratch: filling an empty essential slot matters most, foundations first.
+    slot = capsule.best_open_slot(item, history, plan.get("season"))
+    if slot:
+        br["capsule"] = 1.6 if slot.get("core") else 0.9
+        item["capsule_slot"] = {"id": slot["id"], "name": slot["name"], "core": bool(slot.get("core"))}
+    else:
+        br["capsule"] = 0.0
+        item["capsule_slot"] = None
     fresh = 0.0
     try:
         pub = datetime.fromisoformat((item.get("published_at") or "").replace("Z", "+00:00"))
@@ -151,7 +150,6 @@ def score(item: dict, profile: dict, plan: dict, learned: dict, ref_price: dict[
         br["deal"] += 0.3
     if item.get("size_status") == "unknown_profile":
         notes.append("size not checked (profile size missing)")
-    br["prefer_store"] = 0.5 if item["store"] in profile.get("shopping", {}).get("prefer_stores", []) else 0.0
 
     total = round(sum(br.values()), 2)
     item["score"] = total
@@ -161,7 +159,7 @@ def score(item: dict, profile: dict, plan: dict, learned: dict, ref_price: dict[
 
 
 def rank(items: list[dict], profile: dict, plan: dict, history: dict, groups: list[str] | None = None,
-         per_store: int = 3, per_category: int = 8, limit: int = 40) -> tuple[list[dict], Counter]:
+         per_store: int = 3, per_category: int = 8, limit: int = 40, per_slot: int = 3) -> tuple[list[dict], Counter]:
     seen = set(history["items"].keys()) | {v.get("url", "").split("?")[0].rstrip("/") for v in history["items"].values()}
     learned = history.get("learned", {})
     rejected: Counter = Counter()
@@ -179,23 +177,46 @@ def rank(items: list[dict], profile: dict, plan: dict, history: dict, groups: li
     for it in ok:
         by_cat[it["category"]].append(it["price"])
     ref = {c: statistics.median(v) for c, v in by_cat.items() if v}
-    wardrobe_cats = {w.get("category") for w in profile.get("wardrobe", []) if not str(w.get("item", "")).startswith("example")}
     for it in ok:
-        score(it, profile, plan, learned, ref, wardrobe_cats)
+        score(it, profile, plan, learned, ref, history)
     ok.sort(key=lambda x: x["score"], reverse=True)
+
     # de-dupe near-identical colourways: same store + same title minus colour words
-    out, store_n, cat_n, keys = [], Counter(), Counter(), set()
+    pool, keys = [], set()
     for it in ok:
-        code = re.match(r"^([A-Z0-9]{3,})-[A-Z]{1,3}$", it["title"].strip())
+        code = re.match(r"^([A-Z0-9]{3,})-[A-Z.]{1,5}$", it["title"].strip())
         key = (it["store"], code.group(1)) if code else (it["store"], re.sub(r"\b(" + "|".join(map(re.escape, it.get("colours", []) or ["~"])) + r")\b", "", norm(it["title"])).strip())
-        if key in keys:
-            continue
-        if store_n[it["store"]] >= per_store or cat_n[it["category"]] >= per_category:
-            continue
-        keys.add(key)
+        if key not in keys:
+            keys.add(key)
+            pool.append(it)
+
+    # 1) Reserve the best few for every still-empty, in-season wardrobe slot in scope, so an essential is never
+    #    crowded out just because its category scores lower overall (e.g. puffers rarely state their fill).
+    chosen: dict[str, dict] = {}
+    slot_ids = [s["id"] for s in capsule.slots()
+                if s["id"] not in capsule.filled(history) and capsule.in_season(s, plan.get("season", ""))
+                and (not groups or s["group"] in groups)]
+    for sid in slot_ids:
+        got, stores_here = 0, set()
+        for it in pool:
+            if (it.get("capsule_slot") or {}).get("id") == sid and it["store"] not in stores_here:
+                chosen[it["id"]] = it
+                stores_here.add(it["store"])
+                got += 1
+                if got >= per_slot:
+                    break
+    # 2) Fill the rest by score, with store/category caps for variety.
+    store_n, cat_n = Counter(), Counter()
+    for it in chosen.values():
         store_n[it["store"]] += 1
         cat_n[it["category"]] += 1
-        out.append(it)
-        if len(out) >= limit:
+    for it in pool:
+        if len(chosen) >= limit:
             break
+        if it["id"] in chosen or store_n[it["store"]] >= per_store or cat_n[it["category"]] >= per_category:
+            continue
+        chosen[it["id"]] = it
+        store_n[it["store"]] += 1
+        cat_n[it["category"]] += 1
+    out = sorted(chosen.values(), key=lambda x: x["score"], reverse=True)
     return out, rejected

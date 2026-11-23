@@ -1,6 +1,6 @@
 ---
 name: fashion-scout
-description: Personal menswear scout. Finds clothes that fit the user's profile (sizes, style, colours, quality-for-price), checks that their size is actually in stock, and emails a 5-pick illustrated digest that learns from email replies. Use for the weekly scheduled run ("run the fashion scout", "weekly picks") and for on-demand requests ("find me an overshirt", "I need white sneakers under 5k", "what should I buy for winter").
+description: Personal menswear scout that builds the user's wardrobe from scratch. Finds clothes that fit the profile (sizes, loose fits, style, quality-for-price), checks that one of the user's sizes is actually in stock, and emails a 5-pick illustrated digest that learns from email replies. Use for the weekly scheduled run ("run the fashion scout", "weekly picks") and for on-demand requests ("find me an overshirt", "I need white sneakers under 5k", "what should I buy for winter").
 ---
 
 # Fashion Scout
@@ -11,11 +11,13 @@ Run every command from the repo root. Standard library Python plus Node/Playwrig
 
 ## Non-negotiables
 1. **Never invent products, prices, sizes or links.** Every pick goes through `python3 -m scout pick`, which re-checks it live. If the result says `sold_out`, `not_offered` or `unverified`, replace the pick.
-2. **The user's size must be in stock.** `in_stock` is the goal. `in_stock_size_unknown` is acceptable only for the wildcard, and the email says so. `unknown_profile` means the profile has no size; say so in the intro and ask for sizes.
+2. **One of the user's sizes must be in stock.** The profile lists ranges (tops M *or* L, waist 32, UK 9); `size_label` shows which are available, e.g. "M, L". The user sits between M and L, so for relaxed/oversized cuts say M is probably enough, and for regular or slim cuts suggest L. `in_stock_size_unknown` is acceptable only for the wildcard, and the email says so.
 3. **No luxury.** The profile has hard caps. The price must be justified by quality, which means looking at `quality.reasons`, not only the score.
 4. **Never repeat** an item from `data/history.json` (the engine filters these).
 5. **Look before you pick.** Read `out/sheet.png`. Reject anything whose photo clashes with the profile, even if it scores well (loud prints, costume-like pieces, strange styling, unwanted logos).
 6. Mirror the profile's `avoid` / `dislike` lists and the `taste_notes` in history. Those notes are the user's own words, so weigh them heavily.
+7. **No colour or brand bias.** The user explicitly has none. Do not lean toward neutrals, favourite brands or "safe" colours. Pick each piece on its own merit and vary the edit naturally.
+8. **The wardrobe is built from scratch** (`data/capsule.json`). Prefer picks that fill an empty essential (`capsule_slot` on each candidate), foundations (`core`) first. `python3 -m scout capsule` shows progress. Do not assume the user owns anything that is not recorded as bought.
 
 ## Weekly run (scheduled)
 
@@ -46,7 +48,7 @@ Run every command from the repo root. Standard library Python plus Node/Playwrig
 ### 5. Choose the edit
 - Choose 4 **focus** picks from `plan.focus_group` and 1 **wildcard** (any group, or a splurge on something that lasts years).
 - Diversity: at most one pick per store and no two near-identical pieces. Vary colour.
-- Coherence: picks should work together and with `[[wardrobe]]` items in the profile. Fill wardrobe gaps first.
+- Coherence: picks should work together and with the essentials already filled (`scout capsule`). Early on, most picks should fill empty foundation slots, with at most one "fun" piece.
 - Balance the vibes across the week (minimal, smart-casual, streetwear) rather than five of one.
 - `python3 -m scout pick 3 7 12 18 --wildcard 25` (numbers or URLs) live-verifies each pick and writes `out/picks.json`. Replace any pick that comes back with a bad size status and run it again.
 
@@ -57,8 +59,9 @@ Edit `out/picks.json`:
 - For each pick:
   - `display_name`: a clean product name. Store titles can be codes such as "JAROM-OW", so rename them.
   - `why`: one or two sentences grounded in facts from the data (fabric, weight, fit, price compared with similar items) and why it suits *this* user.
-  - `pairs_with`: concrete items, preferably from the wardrobe.
-- `outfit`: one complete outfit built from this week's picks and owned items.
+  - `pairs_with`: concrete items, preferably other picks this week or essentials already bought; otherwise name the essential to get next ("a dark straight jean, which is coming in a later edit").
+  - For tops, add a size hint in `why` when helpful ("relaxed cut: M is enough" or "regular fit: go L for the easy fit you like").
+- `outfit`: one complete outfit built from this week's picks and whatever has been bought.
 - Optionally `learned_note` and `sale_note`.
 
 Tone: a knowledgeable friend. Plain English, specific, no hype words ("elevate", "must-have", "game-changer").
@@ -83,7 +86,8 @@ When the user asks directly ("find me a navy overshirt under 3k"):
 - Record picks only if the user wants them remembered.
 
 ## Files
-- `profile/profile.toml`: who the user is (sizes, fits, colours, dealbreakers, budget caps, wardrobe, delivery email). Human-edited.
-- `data/history.json`: everything shown, verdicts, learned per-brand sizes, learned taste weights, rotation, taste notes. Machine-edited and committed weekly.
+- `profile/profile.toml`: who the user is (size ranges, loose-fit preference, dealbreakers, budget caps, delivery email). Human-edited.
+- `data/capsule.json`: the 26 essentials being built from scratch. `scout own <slot> "what"` marks one bought elsewhere.
+- `data/history.json`: everything shown, verdicts, learned per-brand sizes, learned taste weights (store and category only), filled wardrobe slots, rotation, taste notes. Machine-edited and committed weekly.
 - `data/stores.json`: the store registry. Add Shopify brands freely; test with `python3 -m scout harvest --store "<name>"`.
 - `out/`: scratch files (gitignored).

@@ -1,63 +1,58 @@
 # Fashion Scout: style profile
-# This is the one file that describes you. The weekly run reads it first.
-# Edit freely (the GitHub app works fine on a phone). Leave a value as "" or 0 if unknown.
-# Things the scout LEARNS (brand sizes, liked colours, skipped brands) live in data/history.json, not here.
+# The weekly run reads this first. Edit freely; the GitHub app works on a phone.
+# Things the scout LEARNS (your real size per brand, brands/categories you like or skip, wardrobe progress)
+# live in data/history.json, not here.
 
 [me]
 section = "men"
 climate = "north-india"        # north-india | humid-coastal | mild-plateau
-height_cm = 0
-build = ""                     # slim | athletic | average | broad | heavier
-notes = ""                     # anything about your body/fit worth knowing, e.g. "broad shoulders, short torso"
+height_cm = 170
+weight_kg = 71
+build = "average"
+notes = "Likes clothes a bit loose; never tight. Sits between M and L depending on brand and cut."
 
 [sizes]
-top = ""                       # letter size for tees/shirts/knits: XS S M L XL XXL
-chest_in = 0                   # Indian shirt sizing often uses 38/40/42/44 (chest inches)
-waist_in = 0                   # trousers/jeans waist, e.g. 32
-inseam_in = 0
-shoe_uk = 0                    # UK size, e.g. 9
+# Ranges are fine: an item qualifies if ANY of these sizes is in stock, and the email says which.
+# A "bought L" reply narrows it to L for that brand only.
+top = ["M", "L"]               # tees, shirts, knits, jackets; joggers/cargos sold S/M/L use this too
+chest_in = []                  # leave empty: derived from M/L (40/42) when a store labels shirts by chest
+waist_in = [32]                # jeans/trousers
+shoe_uk = [9]
 
-# Per-brand exceptions you already know. The scout also learns these from "bought" replies.
-# Example:  [sizes.brand."Snitch"]  top = "L"
+# Per-brand exceptions, if you learn one before the scout does:
+# [sizes.brand."Snitch"]
+# top = "M"
 [sizes.brand]
 
 [fit]
-tops = ["regular", "relaxed", "oversized", "boxy"]
-bottoms = ["straight", "relaxed", "tapered", "regular", "baggy"]
-avoid = ["skinny", "super skinny", "muscle fit", "extra slim"]
+# Soft preferences (nudge up): looser, easy cuts
+prefer = ["relaxed", "oversized", "boxy", "regular fit", "loose", "straight fit", "wide leg", "baggy", "drop shoulder", "easy fit", "comfort fit"]
+# Soft dislikes (nudge down): close cuts are allowed only if everything else is great
+soft_avoid = ["slim fit", "slim-fit", "tapered fit", "fitted"]
+# Hard no: dropped outright
+avoid = ["skinny", "super skinny", "muscle fit", "extra slim", "super slim", "body fit", "bodycon"]
 
 [style]
 vibes = ["minimal", "smart-casual", "streetwear"]
-colours_love = ["white", "off-white", "black", "navy", "grey", "olive", "beige", "brown", "cream", "charcoal", "khaki", "sage"]
-colours_ok = ["blue", "green", "maroon", "rust", "tan", "mustard"]
-colours_avoid = ["neon", "fluorescent"]
-patterns_ok = ["solid", "textured", "stripes", "checks"]
-# Hard dealbreakers: anything matching these words is dropped.
-avoid = ["distressed", "ripped", "sequin", "satin", "shiny", "metallic", "anime", "marvel", "disney", "cartoon"]
-# Soft dislikes: allowed, but pushed down.
-dislike = ["slogan", "typography", "all over print", "big logo", "graphic print"]
+# No colour preferences on purpose: colour never filters or scores.
+# Hard dealbreakers (dropped):
+avoid = ["distressed", "ripped", "sequin", "satin", "shiny", "metallic", "anime", "marvel", "disney", "cartoon", "balaclava",
+         "harry potter", "hedwig", "naruto", "pokemon", "star wars", "batman", "superman", "spider-man", "looney tunes", "friends tv"]
+# Soft dislikes (pushed down, not dropped):
+dislike = ["slogan", "typography", "all over print", "big logo"]
 
 [quality]
 # "Price must be justified by quality. No luxury."
 philosophy = "value-for-quality"
-hard_cap_inr = 9000            # per item; above this is treated as luxury and never shown
+hard_cap_inr = 9000            # per clothing item; above this counts as luxury and never shows
 footwear_cap_inr = 10000
-prefer = ["100% cotton", "linen", "merino", "wool", "oxford", "twill", "selvedge", "corduroy", "flannel", "french terry", "pique", "heavyweight", "supima", "full grain leather", "goodyear welt"]
 avoid_materials = ["acrylic", "pu leather", "faux leather"]
 
 [shopping]
-avoid_stores = []
-prefer_stores = []
+avoid_stores = []              # no brand preference on purpose
 picks_per_week = 5             # 4 focus picks + 1 wildcard
-
-# What you already own. The scout pairs new picks with these and fills gaps.
-# Add/remove lines any time. category: shirt tshirt polo overshirt sweater sweatshirt jacket blazer
-#                                        trousers chinos jeans joggers shorts sneakers loafers boots
-[[wardrobe]]
-item = "example: white sneakers"
-category = "sneakers"
-colour = "white"
+mode = "build-from-scratch"    # fill data/capsule.json essentials first; pair picks with each other and with what's been bought
 
 [delivery]
-email = ""                     # filled at setup
+email = "rahullko0@gmail.com"
 weekday = "Sunday"

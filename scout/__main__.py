@@ -11,6 +11,8 @@
   feedback RUN --text "..."    apply a reply like "1 love, 2 skip collar looks cheap, 3 bought L"
   watch                        re-check liked/saved items for price drops or restocks -> out/watch.json
   stats                        what the scout has learned so far
+  capsule                      wardrobe-building progress (which essentials are still missing)
+  own SLOT "what"              mark an essential as owned (e.g. bought elsewhere)
 """
 from __future__ import annotations
 
@@ -31,7 +33,7 @@ def cmd_plan(a):
 
 def _slim(it: dict) -> dict:
     keep = ("id", "store", "title", "url", "category", "group", "price", "mrp", "colours", "size_status", "size_label",
-            "score", "breakdown", "notes", "price_vs_median", "images", "tier", "source")
+            "score", "breakdown", "notes", "price_vs_median", "images", "tier", "source", "capsule_slot")
     d = {k: it.get(k) for k in keep}
     q = it.get("quality") or {}
     d["quality"] = {"score": q.get("score"), "reasons": q.get("reasons"), "composition": q.get("composition")}
@@ -183,6 +185,22 @@ def cmd_stats(a):
                       "taste_notes": h["taste_notes"][-5:]}, indent=2, ensure_ascii=False))
 
 
+def cmd_capsule(a):
+    from . import capsule
+    print(json.dumps(capsule.progress(history.load()), indent=2, ensure_ascii=False))
+
+
+def cmd_own(a):
+    from . import capsule
+    from datetime import date
+    h = history.load()
+    if a.slot not in {s["id"] for s in capsule.slots()}:
+        sys.exit("unknown slot; see data/capsule.json")
+    capsule.filled(h)[a.slot] = {"item_id": None, "title": a.what, "store": None, "date": date.today().isoformat()}
+    history.save(h)
+    print("ok")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="scout", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -195,7 +213,7 @@ def main(argv=None):
     s.add_argument("--per-store", type=int, default=4)
     s.add_argument("--show", type=int, default=30)
     s.set_defaults(f=cmd_harvest)
-    s = sub.add_parser("sheet"); s.add_argument("--top", type=int, default=30); s.set_defaults(f=cmd_sheet)
+    s = sub.add_parser("sheet"); s.add_argument("--top", type=int, default=60); s.set_defaults(f=cmd_sheet)
     s = sub.add_parser("verify"); s.add_argument("url"); s.add_argument("--category"); s.add_argument("--full", action="store_true")
     s.set_defaults(f=cmd_verify)
     s = sub.add_parser("pick"); s.add_argument("refs", nargs="+"); s.add_argument("--wildcard"); s.set_defaults(f=cmd_pick)
@@ -207,6 +225,8 @@ def main(argv=None):
     s.set_defaults(f=cmd_feedback)
     sub.add_parser("watch").set_defaults(f=cmd_watch)
     sub.add_parser("stats").set_defaults(f=cmd_stats)
+    sub.add_parser("capsule").set_defaults(f=cmd_capsule)
+    s = sub.add_parser("own"); s.add_argument("slot"); s.add_argument("what"); s.set_defaults(f=cmd_own)
     a = ap.parse_args(argv)
     a.f(a)
 

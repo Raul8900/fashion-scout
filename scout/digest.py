@@ -72,7 +72,7 @@ def _inr(x) -> str:
 def _size_badge(p: dict) -> tuple[str, str]:
     st, lbl = p.get("size_status"), p.get("size_label")
     if st == "in_stock":
-        return f"Your size ({lbl}) in stock", GOOD
+        return f"In stock in {lbl}", GOOD
     if st == "in_stock_size_unknown":
         return "In stock · check your size", WARN
     if st == "unknown_profile":
@@ -99,6 +99,9 @@ def _card(n: int, p: dict, cid: str | None, label: str = "") -> str:
            f'style="display:block;width:100%;max-width:260px;height:auto;border-radius:6px;border:0"></a>') if cid else ""
     why = e(p.get("why", ""))
     pairs = e(p.get("pairs_with", ""))
+    slot = p.get("capsule_slot")
+    slot_html = (f'<div style="font-size:12px;color:{ACCENT};margin:0 0 8px">Fills: <b>{e(slot["name"])}</b>'
+                 f'{" · essential" if slot.get("core") else ""}</div>') if slot else ""
     tag = f'<div style="font:600 11px/1.2 Helvetica,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:{ACCENT};margin:0 0 6px">{e(label)}</div>' if label else ""
     return f"""
 <tr><td style="padding:0 0 18px">
@@ -110,7 +113,8 @@ def _card(n: int, p: dict, cid: str | None, label: str = "") -> str:
     <div style="font:600 17px/1.3 Georgia,serif;margin:0 0 6px"><a href="{e(p['url'])}" style="color:{INK};text-decoration:none">{name}</a></div>
     <div style="font-size:16px;font-weight:700;margin:0 0 8px">{price}{off}</div>
     <div style="display:inline-block;font-size:12px;font-weight:600;color:{colour};border:1px solid {colour};border-radius:20px;padding:2px 9px;margin:0 0 10px">{e(badge)}</div>
-    <div style="font-size:12px;color:{MUTED};margin:0 0 10px">{qline}</div>
+    <div style="font-size:12px;color:{MUTED};margin:0 0 6px">{qline}</div>
+    {slot_html}
     {f'<div style="margin:0 0 8px">{why}</div>' if why else ''}
     {f'<div style="margin:0 0 12px;color:{MUTED}"><b style="color:{INK}">Wear it with:</b> {pairs}</div>' if pairs else ''}
     <a href="{e(p['url'])}" style="display:inline-block;background:{INK};color:#fff;text-decoration:none;font-weight:600;font-size:13px;padding:8px 14px;border-radius:6px">View at {e(p.get('store',''))} →</a>
@@ -146,6 +150,17 @@ def build_email(picks: dict, profile: dict, history: dict, watch: list | None = 
             f'({html.escape(w["store"])}): <b style="color:{GOOD}">{html.escape(w["event"])}</b></li>' for w in watch)
         watch_html = (f'<tr><td style="padding:0 0 18px;font:14px/1.5 Helvetica,Arial,sans-serif;color:{INK}">'
                       f'<div style="font:600 16px Georgia,serif;margin:0 0 8px">From your watchlist</div><ul style="margin:0;padding-left:18px">{rows}</ul></td></tr>')
+    from . import capsule
+    prog = capsule.progress(history)
+    # count essentials this week's picks would fill if bought
+    week_slots = {p["capsule_slot"]["id"] for p in items if p.get("capsule_slot")}
+    bar_w = round(100 * prog["filled"] / max(1, prog["total"]))
+    progress_html = (
+        f'<tr><td style="padding:0 0 18px;font:13px/1.5 Helvetica,Arial,sans-serif;color:{MUTED}">'
+        f'<b style="color:{INK}">Wardrobe build: {prog["filled"]} of {prog["total"]} essentials</b> '
+        f'({prog["core_filled"]}/{prog["core_total"]} foundations). This week can fill {len(week_slots)} more.'
+        f'<div style="height:6px;background:{LINE};border-radius:3px;margin-top:6px"><div style="height:6px;width:{max(bar_w,2)}%;background:{ACCENT};border-radius:3px"></div></div>'
+        f'</td></tr>')
     p0 = picks.get("plan", {})
     d = datetime.fromisoformat(run_id).strftime("%-d %b")
     focus = (picks.get("focus") or p0.get("focus_group") or "").title()
@@ -156,7 +171,7 @@ def build_email(picks: dict, profile: dict, history: dict, watch: list | None = 
     subject = picks.get("subject") or f"Fashion Scout · {d} · {n} picks ({focus})"
     reply_help = (f"Reply to this email to teach me. One line per pick, e.g.<br>"
                   f"<code>1 love</code> · <code>2 skip, collar looks flimsy</code> · <code>3 bought L</code> · <code>4 save</code><br>"
-                  f"Saved items get watched for price drops; <i>bought</i> teaches me your size at that brand.")
+                  f"Saved items get watched for price drops. <i>bought</i> ticks off a wardrobe essential and teaches me your size at that brand.")
     body = f"""<!doctype html><html><body style="margin:0;padding:0;background:{BG}">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:{BG}"><tr><td align="center" style="padding:24px 12px">
 <table role="presentation" width="640" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%">
@@ -164,6 +179,7 @@ def build_email(picks: dict, profile: dict, history: dict, watch: list | None = 
  <tr><td style="padding:6px 0 6px;font:600 26px/1.2 Georgia,serif;color:{INK}">{html.escape(picks.get('headline') or f'{focus} edit')}</td></tr>
  <tr><td style="padding:0 0 18px;font:14px/1.5 Helvetica,Arial,sans-serif;color:{MUTED}">{intro}{('<br><b style="color:' + GOOD + '">' + html.escape(sale) + '</b>') if sale else ''}</td></tr>
  {f'<tr><td style="padding:0 0 18px"><div style="padding:10px 14px;border-left:3px solid {ACCENT};background:{CARD};font:13px/1.5 Helvetica,Arial,sans-serif;color:{INK}"><b>From your last reply:</b> {html.escape(picks["learned_note"])}</div></td></tr>' if picks.get("learned_note") else ''}
+ {progress_html}
  {''.join(cards)}
  {f'<tr><td style="padding:0 0 18px;font:14px/1.5 Helvetica,Arial,sans-serif;color:{INK}"><div style="font:600 16px Georgia,serif;margin:0 0 6px">One outfit from this week</div>{outfit}</td></tr>' if outfit else ''}
  {watch_html}

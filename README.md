@@ -2,21 +2,24 @@
 
 A personal menswear scout run weekly by Claude. Each Sunday it emails five pieces that:
 
-- fit your style profile (minimal, smart casual, streetwear), colours and dealbreakers,
-- are **in stock in your size right now**, checked against the store's live data minutes before sending,
+- **build a good wardrobe from scratch**, filling 26 essentials (foundations first) and tracking progress,
+- fit your style (minimal, smart casual, streetwear) and your preference for a slightly loose fit, with no colour or brand bias,
+- are **in stock in one of your sizes right now** (M or L, waist 32, UK 9), checked against the store's live data minutes before sending,
 - justify their price with real fabric and construction quality (100% cotton, merino, corduroy, 230 GSM, full-grain leather…), never luxury,
-- suit the season in North India and go with what you already own,
+- suit the season in North India and go with each other,
 - have never been shown to you before.
 
 Reply to the email (`1 love`, `2 skip, collar looks flimsy`, `3 bought L`, `4 save`) and it learns:
-- brands, colours and categories you like or skip,
+- brands and categories you like or skip,
+- which wardrobe essentials you now own,
 - your real size at each brand,
 - items to watch for price drops or restocks.
 
 ## How it works
 
 ```
-profile/profile.toml   you: sizes, fit, colours, dealbreakers, caps, wardrobe   (edit this)
+profile/profile.toml   you: size ranges, fit, dealbreakers, price caps, email  (edit this)
+data/capsule.json      the 26-piece wardrobe being built from scratch
 data/history.json      memory: every pick, your verdicts, learned sizes/taste    (updated each run)
 data/stores.json       ~30 live-stock Indian stores + browser-verified marketplaces
 scout/                 engine: catalog → filter → quality score → rank → verify → email

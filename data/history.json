@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "runs": [
+    {
+      "run_id": "2026-11-23",
+      "date": "2026-11-23",
+      "focus": "layers",
+      "picks": [
+        "www.snitch.co.in:10353856970914",
+        "thebearhouse.com:8585273966843",
+        "www.thehouseofrare.com:7134726619207",
+        "www.nobero.com:15931336949926",
+        "www.levi.in:15343104524578"
+      ],
+      "thread_id": "1a207ad8055a2ff9",
+      "message_id": "1a207ad8055a2ff9",
+      "feedback_done": false
+    }
+  ],
+  "items": {
+    "www.snitch.co.in:10353856970914": {
+      "url": "https://www.snitch.co.in/products/relaxed-fit-textured-jacket-4jk032-02",
+      "title": "Double Pocket Corduroy Collar Denim Jacket",
+      "store": "Snitch",
+      "category": "jacket",
+      "colours": [
+        "brown"
+      ],
+      "price_at_pick": 2624.0,
+      "last_price": 2624.0,
+      "image": "https://cdn.shopify.com/s/files/1/0420/7073/7058/files/1_e250fa43-7890-4311-87ad-b73afc27af74.png?v=1792951073",
+      "run_id": "2026-11-23",
+      "pick_no": 1,
+      "first_shown": "2026-11-23",
+      "verdict": null,
+      "size_label": "M, L",
+      "times_shown": 1
+    },
+    "thebearhouse.com:8585273966843": {
+      "url": "https://thebearhouse.com/products/sioux",
+      "title": "Sioux",
+      "store": "The Bear House",
+      "category": "overshirt",
+      "colours": [
+        "grey"
+      ],
+      "price_at_pick": 2309.0,
+      "last_price": 2309.0,
+      "image": "https://cdn.shopify.com/s/files/1/0517/2939/9964/files/TBH-SIOUX-GY_1.jpg?v=1753864345",
+      "run_id": "2026-11-23",
+      "pick_no": 2,
+      "first_shown": "2026-11-23",
+      "verdict": null,
+      "size_label": "L",
+      "times_shown": 1
+    },
+    "www.thehouseofrare.com:7134726619207": {
+      "url": "https://www.thehouseofrare.com/products/lyzo-mens-sweater-beige",
+      "title": "Rare Rabbit Men's Lyzo Beige Cotton Plain Regular Fit Full Sleeve Cowl Neck Sweater",
+      "store": "Rare Rabbit",
+      "category": "sweater",
+      "colours": [
+        "beige",
+        "brown",
+        "maroon"
+      ],
+      "price_at_pick": 2804.0,
+      "last_price": 2804.0,
+      "image": "https://cdn.shopify.com/s/files/1/0752/6435/files/8909196159788hm_12.webp?v=1765372688",
+      "run_id": "2026-11-23",
+      "pick_no": 3,
+      "first_shown": "2026-11-23",
+      "verdict": null,
+      "size_label": "M-40, L-42",
+      "times_shown": 1
+    },
+    "www.nobero.com:15931336949926": {
+      "url": "https://www.nobero.com/products/lightweight-packable-puffer-jacket-1",
+      "title": "Lightweight Hooded Puffer Jacket",
+      "store": "Nobero",
+      "category": "jacket",
+      "colours": [
+        "off-white",
+        "black",
+        "navy",
+        "grey"
+      ],
+      "price_at_pick": 3299.0,
+      "last_price": 3299.0,
+      "image": "https://cdn.shopify.com/s/files/1/0337/9413/0052/files/Grey_c13171b0-1d3c-4cee-93ef-7b16d3eeeba2.jpg?v=1793708858",
+      "run_id": "2026-11-23",
+      "pick_no": 4,
+      "first_shown": "2026-11-23",
+      "verdict": null,
+      "size_label": "M, L",
+      "times_shown": 1
+    },
+    "www.levi.in:15343104524578": {
+      "url": "https://www.levi.in/products/mens-beige-relaxed-straight-fit-mid-rise-chinos-00bhf0003",
+      "title": "Men's Beige Relaxed Straight Fit Mid Rise Chinos",
+      "store": "Levi's India",
+      "category": "chinos",
+      "colours": [
+        "beige"
+      ],
+      "price_at_pick": 1649.0,
+      "last_price": 1649.0,
+      "image": "https://cdn.shopify.com/s/files/1/0805/5128/0930/files/00BHF0003_09_Ai.png?v=1791370788",
+      "run_id": "2026-11-23",
+      "pick_no": 5,
+      "first_shown": "2026-11-23",
+      "verdict": null,
+      "size_label": "32",
+      "times_shown": 1
+    }
+  },
+  "learned": {
+    "sizes": {},
+    "weights": {}
+  },
+  "rotation": {
+    "index": 1
+  },
+  "taste_notes": []
+}

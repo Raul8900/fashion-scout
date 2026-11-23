@@ -1,0 +1,31 @@
+{
+  "_doc": "The wardrobe the scout is building from scratch. A pick that fills an EMPTY slot gets a boost; a 'bought' reply fills the slot. core=true slots are foundations and come first. seasons limits when a slot is pushed (cold = early-winter/winter/late-winter, hot = spring/summer/monsoon); omit for all year. match: categories + any keyword (in title/description); exclude keywords veto. These are slot names, not colour preferences.",
+  "slots": [
+    {"id": "tee-white", "name": "Heavyweight white tee", "group": "tops", "core": true, "categories": ["tshirt"], "keywords": ["white", "off-white", "ecru"], "exclude": ["graphic", "print", "slogan"]},
+    {"id": "tee-dark", "name": "Black or navy tee", "group": "tops", "core": true, "categories": ["tshirt"], "keywords": ["black", "navy", "charcoal"], "exclude": ["graphic", "print", "slogan"]},
+    {"id": "tee-neutral", "name": "Neutral tee (grey, olive, beige)", "group": "tops", "core": false, "categories": ["tshirt"], "keywords": ["grey", "olive", "beige", "brown", "khaki", "sage", "taupe"], "exclude": ["graphic", "print"]},
+    {"id": "oxford-shirt", "name": "Oxford button-down shirt", "group": "tops", "core": true, "categories": ["shirt"], "keywords": ["oxford"]},
+    {"id": "crisp-shirt", "name": "Crisp white or light-blue shirt", "group": "tops", "core": true, "categories": ["shirt"], "keywords": ["white", "light blue", "sky blue", "poplin"], "exclude": ["print", "linen"]},
+    {"id": "texture-shirt", "name": "Textured or check casual shirt", "group": "tops", "core": false, "categories": ["shirt"], "keywords": ["check", "checked", "plaid", "flannel", "textured", "dobby", "seersucker", "waffle", "corduroy", "stripe"]},
+    {"id": "linen-shirt", "name": "Linen shirt", "group": "tops", "core": false, "seasons": ["hot"], "categories": ["shirt"], "keywords": ["linen"]},
+    {"id": "polo", "name": "Knit or pique polo", "group": "tops", "core": false, "categories": ["polo"], "keywords": [], "exclude": ["graphic", "print"]},
+    {"id": "overshirt", "name": "Overshirt / shacket", "group": "layers", "core": true, "categories": ["overshirt"], "keywords": []},
+    {"id": "knit", "name": "Crew or half-zip knit sweater", "group": "layers", "core": true, "seasons": ["cold"], "categories": ["sweater"], "keywords": []},
+    {"id": "sweatshirt", "name": "Plain sweatshirt", "group": "layers", "core": false, "categories": ["sweatshirt"], "keywords": [], "exclude": ["hood", "graphic", "print"]},
+    {"id": "hoodie", "name": "Clean hoodie", "group": "layers", "core": false, "categories": ["sweatshirt"], "keywords": ["hoodie", "hooded"], "exclude": ["graphic", "print"]},
+    {"id": "light-jacket", "name": "Light jacket (bomber, harrington, denim, workwear)", "group": "layers", "core": true, "categories": ["jacket"], "keywords": ["bomber", "harrington", "denim", "trucker", "workwear", "chore", "coach", "utility", "field"]},
+    {"id": "winter-jacket", "name": "Warm winter jacket", "group": "layers", "core": true, "seasons": ["cold"], "categories": ["jacket"], "keywords": ["puffer", "quilted", "padded", "wool", "sherpa", "parka", "down", "fleece lined", "insulated"]},
+    {"id": "blazer", "name": "Unstructured blazer", "group": "layers", "core": false, "categories": ["blazer"], "keywords": [], "exclude": ["suit", "waistcoat", "tuxedo"]},
+    {"id": "jeans-dark", "name": "Dark straight or relaxed jeans", "group": "bottoms", "core": true, "categories": ["jeans"], "keywords": ["dark", "indigo", "raw", "rinse", "black", "navy"], "exclude": ["distressed", "ripped"]},
+    {"id": "jeans-light", "name": "Mid or light wash relaxed jeans", "group": "bottoms", "core": false, "categories": ["jeans"], "keywords": ["light", "mid", "ice", "stone wash", "vintage"]},
+    {"id": "chinos", "name": "Chinos", "group": "bottoms", "core": true, "categories": ["chinos"], "keywords": []},
+    {"id": "smart-trousers", "name": "Smart or pleated trousers", "group": "bottoms", "core": true, "categories": ["trousers"], "keywords": ["pleat", "pleated", "formal", "smart", "tailored", "korean", "wide", "gurkha", "wool"]},
+    {"id": "cargo", "name": "Cargo or utility pants", "group": "bottoms", "core": false, "categories": ["joggers", "trousers"], "keywords": ["cargo", "utility", "parachute"]},
+    {"id": "joggers", "name": "Joggers / track pants", "group": "bottoms", "core": false, "categories": ["joggers"], "keywords": ["jogger", "track", "sweatpant"]},
+    {"id": "shorts", "name": "Shorts", "group": "bottoms", "core": false, "seasons": ["hot"], "categories": ["shorts"], "keywords": []},
+    {"id": "sneakers-white", "name": "Clean white sneakers", "group": "footwear", "core": true, "categories": ["sneakers"], "keywords": ["white", "off-white"]},
+    {"id": "sneakers-other", "name": "Everyday sneakers (suede, retro, chunky)", "group": "footwear", "core": false, "categories": ["sneakers"], "keywords": []},
+    {"id": "loafers", "name": "Loafers", "group": "footwear", "core": true, "categories": ["loafers"], "keywords": []},
+    {"id": "boots", "name": "Boots (chelsea, chukka)", "group": "footwear", "core": false, "seasons": ["cold"], "categories": ["boots"], "keywords": []}
+  ]
+}

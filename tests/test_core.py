@@ -2,7 +2,7 @@ import unittest
 
 from scout import classify, feedback, history, quality, sizing
 
-PROFILE = {"sizes": {"top": "M", "chest_in": 40, "waist_in": 32, "shoe_uk": 9, "brand": {"Snitch": {"top": "L"}}}}
+PROFILE = {"sizes": {"top": ["M", "L"], "waist_in": [32], "shoe_uk": [9], "brand": {"Snitch": {"top": "L"}}}}
 
 
 class Sizing(unittest.TestCase):
@@ -11,15 +11,17 @@ class Sizing(unittest.TestCase):
 
     def test_letter_and_numeric_tops(self):
         w = self.want("shirt")
-        self.assertEqual(sizing.size_status({"S": True, "M": True}, w), ("in_stock", "M"))
-        self.assertEqual(sizing.size_status({"S-38": True, "M-40": False}, w), ("sold_out", "M-40"))
-        self.assertEqual(sizing.size_status({"38": True, "40": True, "42": True}, w), ("in_stock", "40"))
+        self.assertEqual(sizing.size_status({"S": True, "M": True, "L": True}, w), ("in_stock", "M, L"))
+        self.assertEqual(sizing.size_status({"S": True, "M": False, "L": True}, w), ("in_stock", "L"))
+        self.assertEqual(sizing.size_status({"S-38": True, "M-40": False, "L-42": False}, w)[0], "sold_out")
+        self.assertEqual(sizing.size_status({"38": True, "40": False, "42": True}, w), ("in_stock", "42"))
         self.assertEqual(sizing.size_status({"XL": True}, w)[0], "not_offered")
         self.assertFalse(sizing.label_matches("XM", w))
 
     def test_brand_override_and_learned(self):
-        self.assertEqual(self.want("tshirt", "Snitch")["letter"], "L")
-        self.assertEqual(self.want("tshirt", "Celio", {"Celio": {"top": "S"}})["letter"], "S")
+        self.assertEqual(self.want("tshirt", "Snitch")["letters"], ["L"])
+        self.assertEqual(self.want("tshirt", "Celio", {"Celio": {"top": "M"}})["letters"], ["M"])
+        self.assertEqual(self.want("joggers")["letters"], ["M", "L"])  # joggers sold S/M/L
 
     def test_waist_and_shoe(self):
         self.assertEqual(sizing.size_status({"30": True, "32": True}, self.want("jeans")), ("in_stock", "32"))
@@ -31,6 +33,20 @@ class Sizing(unittest.TestCase):
     def test_missing_profile(self):
         w = sizing.wanted_size({"sizes": {}}, "shirt", "X")
         self.assertEqual(sizing.size_status({"M": True}, w)[0], "unknown_profile")
+
+
+class Capsule(unittest.TestCase):
+    def test_slots(self):
+        from scout import capsule
+        it = {"title": "Heavyweight White Oversized T-Shirt", "category": "tshirt", "colours": ["white"]}
+        self.assertEqual(capsule.matching_slots(it)[0]["id"], "tee-white")
+        it2 = {"title": "Black Graphic Print Tee", "category": "tshirt", "colours": ["black"]}
+        self.assertEqual(capsule.matching_slots(it2), [])
+        h = {"capsule": {}}
+        self.assertEqual(capsule.best_open_slot({"title": "Puffer Jacket", "category": "jacket"}, h, "summer"), None)
+        self.assertEqual(capsule.best_open_slot({"title": "Puffer Jacket", "category": "jacket"}, h, "winter")["id"], "winter-jacket")
+        capsule.fill(h, "x", {"title": "Brown Corduroy Overshirt", "category": "overshirt"})
+        self.assertIn("overshirt", h["capsule"])
 
 
 class Classify(unittest.TestCase):
@@ -98,6 +114,8 @@ class Feedback(unittest.TestCase):
         self.assertEqual(h["learned"]["sizes"]["Snitch"]["top"], "XL")
         self.assertGreater(h["learned"]["weights"]["store:Snitch"], 0)
         self.assertLess(h["learned"]["weights"]["store:Celio"], 0)
+        self.assertIn("overshirt", h["capsule"])          # bought -> wardrobe slot filled
+        self.assertNotIn("colour:olive", h["learned"]["weights"])  # no colour learning
         self.assertTrue(h["runs"][0]["feedback_done"])
 
 
