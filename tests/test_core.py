@@ -87,6 +87,9 @@ class Quality(unittest.TestCase):
     def test_shoes(self):
         self.assertGreater(quality.score("full grain leather upper, goodyear welted", "boots")["score"], 8)
         self.assertLess(quality.score("PU leather sneaker", "sneakers")["score"], 4)
+        vegan = quality.score("soft navy vegan suede upper penny loafer", "loafers")
+        self.assertNotIn("+real leather/suede", vegan["reasons"])
+        self.assertLess(vegan["score"], 4.5)
 
 
 class Feedback(unittest.TestCase):

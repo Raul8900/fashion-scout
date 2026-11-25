@@ -162,7 +162,7 @@ def build_email(picks: dict, profile: dict, history: dict, watch: list | None = 
         f'<div style="height:6px;background:{LINE};border-radius:3px;margin-top:6px"><div style="height:6px;width:{max(bar_w,2)}%;background:{ACCENT};border-radius:3px"></div></div>'
         f'</td></tr>')
     p0 = picks.get("plan", {})
-    d = datetime.fromisoformat(run_id).strftime("%-d %b")
+    d = datetime.fromisoformat(run_id[:10]).strftime("%-d %b")
     focus = (picks.get("focus") or p0.get("focus_group") or "").title()
     sale = picks.get("sale_note") or ""
     intro = html.escape(picks.get("intro", ""))

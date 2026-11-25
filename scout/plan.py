@@ -67,6 +67,17 @@ def active_sales(d: date) -> list[str]:
     return [name for name, a, b in SALES if a <= md <= b]
 
 
+def _unique_run_id(base: str, history: dict) -> str:
+    """Two runs on one day (e.g. a manual 'run now') must not overwrite each other's record."""
+    taken = {r["run_id"] for r in history.get("runs", [])}
+    if base not in taken:
+        return base
+    n = 2
+    while f"{base}-{n}" in taken:
+        n += 1
+    return f"{base}-{n}"
+
+
 def make_plan(profile: dict, history: dict, d: date | None = None) -> dict:
     d = d or date.today()
     climate = profile.get("me", {}).get("climate", "north-india")
@@ -78,7 +89,7 @@ def make_plan(profile: dict, history: dict, d: date | None = None) -> dict:
     n = int(profile.get("shopping", {}).get("picks_per_week", 5))
     return {
         "date": d.isoformat(),
-        "run_id": d.isoformat(),
+        "run_id": _unique_run_id(d.isoformat(), history),
         "season": season,
         "climate": climate,
         "focus_group": focus,

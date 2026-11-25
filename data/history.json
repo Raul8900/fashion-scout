@@ -30,6 +30,21 @@
       "thread_id": "1a2118ab74b93a0a",
       "message_id": "1a2118ab74b93a0a",
       "feedback_done": false
+    },
+    {
+      "run_id": "2026-11-25-2",
+      "date": "2026-11-25",
+      "focus": "bottoms",
+      "picks": [
+        "www.fugazee.com:7552163086423",
+        "www.blackberrys.com:9669069766821",
+        "www.nobero.com:15382617981094",
+        "thebearhouse.com:9030479872251",
+        "www.thehouseofrare.com:7633810063431"
+      ],
+      "thread_id": "1a211a6a7102139a",
+      "message_id": "1a211a6a7102139a",
+      "feedback_done": false
     }
   ],
   "items": {
@@ -228,6 +243,106 @@
       "verdict": null,
       "size_label": "32",
       "times_shown": 1
+    },
+    "www.fugazee.com:7552163086423": {
+      "url": "https://www.fugazee.com/products/mustard-orange-pleated-corduroy-korean-pants",
+      "title": "Mustard Orange Pleated Corduroy Korean Pants",
+      "store": "Fugazee",
+      "category": "trousers",
+      "colours": [
+        "mustard",
+        "orange"
+      ],
+      "price_at_pick": 1499.0,
+      "last_price": 1499.0,
+      "image": "https://cdn.shopify.com/s/files/1/2343/5149/files/4_f73da13e-0dd1-4b50-a256-550fd9bbdb5b.jpg?v=1767084156",
+      "run_id": "2026-11-25-2",
+      "pick_no": 1,
+      "first_shown": "2026-11-25",
+      "verdict": null,
+      "size_label": "M/30, L/32",
+      "times_shown": 1
+    },
+    "www.blackberrys.com:9669069766821": {
+      "url": "https://www.blackberrys.com/products/black-textured-khaki-oak",
+      "title": "Black Textured Khakis - Oak",
+      "store": "Blackberrys",
+      "category": "chinos",
+      "colours": [
+        "black"
+      ],
+      "price_at_pick": 1919.2,
+      "last_price": 1919.2,
+      "image": "https://cdn.shopify.com/s/files/1/0569/0284/4581/files/Black_Textured_Khaki_Oak-EK003342Z1-image1.jpg?v=1767780473",
+      "run_id": "2026-11-25-2",
+      "pick_no": 2,
+      "first_shown": "2026-11-25",
+      "verdict": null,
+      "size_label": "32",
+      "times_shown": 1
+    },
+    "www.nobero.com:15382617981094": {
+      "url": "https://www.nobero.com/products/essential-cargo-joggers-eiffel-tower",
+      "title": "Essential Cargo Joggers",
+      "store": "Nobero",
+      "category": "joggers",
+      "colours": [
+        "navy",
+        "blue",
+        "olive",
+        "green",
+        "brown",
+        "black",
+        "grey",
+        "mocha"
+      ],
+      "price_at_pick": 999.0,
+      "last_price": 999.0,
+      "image": "https://cdn.shopify.com/s/files/1/0337/9413/0052/files/Classic_Cargo_Jogger.jpg?v=1782800663",
+      "run_id": "2026-11-25-2",
+      "pick_no": 3,
+      "first_shown": "2026-11-25",
+      "verdict": null,
+      "size_label": "M, L",
+      "times_shown": 1
+    },
+    "thebearhouse.com:9030479872251": {
+      "url": "https://thebearhouse.com/products/zirom",
+      "title": "ZIROM",
+      "store": "The Bear House",
+      "category": "jeans",
+      "colours": [
+        "blue"
+      ],
+      "price_at_pick": 2099.0,
+      "last_price": 2099.0,
+      "image": "https://cdn.shopify.com/s/files/1/0517/2939/9964/files/DBN-ZIROM-MB_1.jpg?v=1757336773",
+      "run_id": "2026-11-25-2",
+      "pick_no": 4,
+      "first_shown": "2026-11-25",
+      "verdict": null,
+      "size_label": "32",
+      "times_shown": 1
+    },
+    "www.thehouseofrare.com:7633810063431": {
+      "url": "https://www.thehouseofrare.com/products/weston-mens-boots-chocolate-brown",
+      "title": "Rarez Mens Weston Chocolate Brown Suede Boots",
+      "store": "Rare Rabbit",
+      "category": "boots",
+      "colours": [
+        "chocolate",
+        "brown",
+        "taupe"
+      ],
+      "price_at_pick": 4949.0,
+      "last_price": 4949.0,
+      "image": "https://cdn.shopify.com/s/files/1/0752/6435/files/WESTONCHOCOLATEBROWN_6.webp?v=1793860595",
+      "run_id": "2026-11-25-2",
+      "pick_no": 5,
+      "first_shown": "2026-11-25",
+      "verdict": null,
+      "size_label": "9",
+      "times_shown": 1
     }
   },
   "learned": {
@@ -235,7 +350,7 @@
     "weights": {}
   },
   "rotation": {
-    "index": 2
+    "index": 3
   },
   "taste_notes": []
 }

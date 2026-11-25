@@ -33,7 +33,7 @@ SIGNALS: list[tuple[str, float, str, tuple[str, ...] | None]] = [
     (r"\blyocell\b|\btencel\b|\bmodal\b", 0.8, "lyocell/modal", None),
     (r"\bslub\b|\bdobby\b|\bseersucker\b|\bwaffle\b|\bjacquard\b|\bherringbone\b|\bchambray\b", 0.6, "textured weave", None),
     (r"\bfull[- ]grain\b|\btop[- ]grain\b", 2.5, "full/top-grain leather", ("footwear",)),
-    (r"\bgenuine leather\b|\b(100\s*%\s*)?leather upper\b|\bsuede\b|\bnubuck\b", 1.5, "real leather/suede", ("footwear",)),
+    (r"\bgenuine leather\b|\b(100\s*%\s*)?leather upper\b|(?<!vegan )(?<!faux )(?<!micro )(?<!micro-)\bsuede\b(?! finish| look| effect)|\bnubuck\b", 1.5, "real leather/suede", ("footwear",)),
     (r"\bgoodyear\b|\bwelted?\b", 2.5, "welted construction", ("footwear",)),
     (r"\bblake\b|\bhand[- ]?stitched\b|\bhandcrafted\b|\bhand[- ]?made\b", 1.2, "hand/blake stitched", ("footwear",)),
     (r"\bvulcani[sz]ed\b|\bnatural rubber\b|\bmemory foam\b|\bortholite\b|\bcushioned insole\b", 0.6, "good sole/insole", ("footwear",)),
@@ -43,7 +43,7 @@ SIGNALS: list[tuple[str, float, str, tuple[str, ...] | None]] = [
 
 PENALTIES: list[tuple[str, float, str, tuple[str, ...] | None]] = [
     (r"\bacrylic\b", -2.5, "acrylic", None),
-    (r"\b(pu|faux|vegan|synthetic|artificial)\s+leather\b|\bpu\b|\bleatherette\b|\brexine\b", -2.5, "synthetic leather", None),
+    (r"\b(pu|faux|vegan|synthetic|artificial)\s+(leather|suede)\b|\bpu\b|\bleatherette\b|\brexine\b|\bmicro[- ]?(fibre|fiber|suede)\b|\bsuede (finish|look|effect)\b", -2.5, "synthetic leather/suede", None),
     (r"\b100\s*%\s*polyester\b|\bpure polyester\b", -3.0, "100% polyester", ("tops", "layers", "bottoms")),
     (r"\bcotton[- ]?blend\b|\bpoly[- ]?cotton\b|\bcotton[- ]poly\b", -0.8, "cotton blend", ("tops", "bottoms")),
     (r"\bviscose\b|\brayon\b", -0.6, "viscose/rayon", ("layers", "bottoms")),
