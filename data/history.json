@@ -15,6 +15,21 @@
       "thread_id": "1a207ad8055a2ff9",
       "message_id": "1a207ad8055a2ff9",
       "feedback_done": false
+    },
+    {
+      "run_id": "2026-11-25",
+      "date": "2026-11-25",
+      "focus": "tops",
+      "picks": [
+        "www.nobero.com:15451055816870",
+        "www.bonkerscorner.com:14744203952492",
+        "www.snitch.co.in:10388969914530",
+        "www.thehouseofrare.com:7583490768967",
+        "www.wrogn.com:10047091540269"
+      ],
+      "thread_id": "1a2118ab74b93a0a",
+      "message_id": "1a2118ab74b93a0a",
+      "feedback_done": false
     }
   ],
   "items": {
@@ -112,6 +127,107 @@
       "verdict": null,
       "size_label": "32",
       "times_shown": 1
+    },
+    "www.nobero.com:15451055816870": {
+      "url": "https://www.nobero.com/products/men-s-premium-cotton-oxford-shirt-9",
+      "title": "Oxford Premium Cotton Shirt",
+      "store": "Nobero",
+      "category": "shirt",
+      "colours": [
+        "brown",
+        "blue",
+        "white",
+        "beige",
+        "navy",
+        "grey",
+        "sage",
+        "green",
+        "olive"
+      ],
+      "price_at_pick": 1699.0,
+      "last_price": 1699.0,
+      "image": "https://cdn.shopify.com/s/files/1/0337/9413/0052/files/7_33_c68c23f4-327f-4cfe-9124-7118c8ce85a9.jpg?v=1785517480",
+      "run_id": "2026-11-25",
+      "pick_no": 1,
+      "first_shown": "2026-11-25",
+      "verdict": null,
+      "size_label": "M, L",
+      "times_shown": 1
+    },
+    "www.bonkerscorner.com:14744203952492": {
+      "url": "https://www.bonkerscorner.com/products/zigzag-white-knit-t-shirt",
+      "title": "Zigzag White Knit T-shirt",
+      "store": "Bonkers Corner",
+      "category": "tshirt",
+      "colours": [
+        "white"
+      ],
+      "price_at_pick": 999.0,
+      "last_price": 999.0,
+      "image": "https://cdn.shopify.com/s/files/1/0653/0541/1684/files/BonkersCorner_ZigzagWhiteKnitT-shirt_5.jpg?v=1748077586",
+      "run_id": "2026-11-25",
+      "pick_no": 2,
+      "first_shown": "2026-11-25",
+      "verdict": null,
+      "size_label": "L",
+      "times_shown": 1
+    },
+    "www.snitch.co.in:10388969914530": {
+      "url": "https://www.snitch.co.in/products/regular-fit-checks-double-pocket-shirt-4sfs0106-02",
+      "title": "Double Pocket Checks Flannel Shirt",
+      "store": "Snitch",
+      "category": "shirt",
+      "colours": [
+        "black"
+      ],
+      "price_at_pick": 1699.0,
+      "last_price": 1699.0,
+      "image": "https://cdn.shopify.com/s/files/1/0420/7073/7058/files/1_48d9ff50-66c0-43b4-97cc-90d6fe1257c8.jpg?v=1794414647",
+      "run_id": "2026-11-25",
+      "pick_no": 3,
+      "first_shown": "2026-11-25",
+      "verdict": null,
+      "size_label": "M, L",
+      "times_shown": 1
+    },
+    "www.thehouseofrare.com:7583490768967": {
+      "url": "https://www.thehouseofrare.com/products/leto-mens-t-shirt-dark-grey",
+      "title": "Rare Rabbit Men's Leto Dark Grey Cotton Regular Plain T-Shirt",
+      "store": "Rare Rabbit",
+      "category": "tshirt",
+      "colours": [
+        "grey",
+        "black",
+        "beige"
+      ],
+      "price_at_pick": 1979.0,
+      "last_price": 1979.0,
+      "image": "https://cdn.shopify.com/s/files/1/0752/6435/files/RR304534__1_-HM.webp?v=1793195091",
+      "run_id": "2026-11-25",
+      "pick_no": 4,
+      "first_shown": "2026-11-25",
+      "verdict": null,
+      "size_label": "M-40, L-42",
+      "times_shown": 1
+    },
+    "www.wrogn.com:10047091540269": {
+      "url": "https://www.wrogn.com/products/casual-loose-fit-jeans-darkstone-wujn2636w",
+      "title": "Casual Loose Fit Jeans | Dark Stone",
+      "store": "Wrogn",
+      "category": "jeans",
+      "colours": [
+        "stone",
+        "blue"
+      ],
+      "price_at_pick": 1549.0,
+      "last_price": 1549.0,
+      "image": "https://cdn.shopify.com/s/files/1/0818/0305/1309/files/1_73231c1e-0d03-4c1f-b0b5-e704ea983905.jpg?v=1749125681",
+      "run_id": "2026-11-25",
+      "pick_no": 5,
+      "first_shown": "2026-11-25",
+      "verdict": null,
+      "size_label": "32",
+      "times_shown": 1
     }
   },
   "learned": {
@@ -119,7 +235,7 @@
     "weights": {}
   },
   "rotation": {
-    "index": 1
+    "index": 2
   },
   "taste_notes": []
 }
