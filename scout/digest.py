@@ -12,7 +12,7 @@ from .common import OUT, http_get
 
 try:
     from PIL import Image, ImageDraw, ImageFont
-except ImportError:  # Pillow optional: email still works with original images
+except Exception:  # Pillow optional (missing OR broken install): email still works, sheet uses the browser
     Image = None
 
 INK, MUTED, LINE, BG, CARD, ACCENT, GOOD, WARN = "#1d1d1b", "#6b6862", "#e6e1d8", "#f6f3ee", "#ffffff", "#2f4a3a", "#2f6b46", "#9a5b13"
@@ -202,7 +202,7 @@ def build_email(picks: dict, profile: dict, history: dict, watch: list | None = 
 def contact_sheet(cands: list[dict], dest: Path, cols: int = 6, w: int = 220) -> str:
     """Grid of candidate photos with index numbers, for Claude to eyeball style before choosing."""
     if Image is None:
-        return "Pillow not installed; open candidate image URLs individually instead."
+        return _browser_sheet(cands, dest, cols, w)
     h = round(w * 5 / 4)
     cap = 44
     rows = (len(cands) + cols - 1) // cols
@@ -232,4 +232,27 @@ def contact_sheet(cands: list[dict], dest: Path, cols: int = 6, w: int = 220) ->
         draw.text((x + 4, y + h + 21), c["title"][:30], fill="#555", font=font)
     dest.parent.mkdir(parents=True, exist_ok=True)
     sheet.save(dest, "PNG")
+    return str(dest)
+
+
+def _browser_sheet(cands: list[dict], dest: Path, cols: int, w: int) -> str:
+    """Same grid without Pillow: an HTML page screenshotted by headless Chromium (tools/shot.js)."""
+    import subprocess
+    from .common import ROOT
+    cells = "".join(
+        f'<div class="c"><img src="{html.escape(_sized_url((c.get("images") or [""])[0], w * 2))}">'
+        f'<b>{i + 1}</b><p>{html.escape(c["store"][:16])} ₹{c["price"]:.0f}<br><span>{html.escape(c["title"][:32])}</span></p></div>'
+        for i, c in enumerate(cands))
+    page = (f'<!doctype html><meta charset="utf-8"><style>body{{margin:0;font:13px sans-serif;display:grid;'
+            f'grid-template-columns:repeat({cols},{w}px)}}.c{{position:relative}}img{{width:{w}px;height:{round(w*5/4)}px;'
+            f'object-fit:cover;object-position:top;display:block;background:#eee}}b{{position:absolute;top:0;left:0;'
+            f'background:#000;color:#fff;font-size:18px;padding:2px 8px}}p{{margin:3px 4px 8px;height:34px;overflow:hidden}}'
+            f'span{{color:#555}}</style>{cells}')
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    src = dest.with_suffix(".html")
+    src.write_text(page, encoding="utf-8")
+    r = subprocess.run(["node", str(ROOT / "tools" / "shot.js"), str(src.resolve()), str(dest.resolve())],
+                       capture_output=True, text=True, timeout=180)
+    if r.returncode != 0:
+        return f"sheet failed ({r.stderr.strip()[:200]}); open {src} or the image URLs instead"
     return str(dest)
