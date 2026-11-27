@@ -80,7 +80,13 @@ Tone: a knowledgeable friend. Plain English, specific, no hype words ("elevate",
 - Gmail send fails: still record and commit, and report the failure in your final message.
 
 ## On-demand requests
-When the user asks directly ("find me a navy overshirt under 3k"):
+For one specific garment type ("open-hem joggers", "white sneakers", "oxford shirt"):
+- Use a preset if one fits: `python3 -m scout find open-hem-sweatpants` (presets live in `data/finds.json`). Otherwise run a custom find: `python3 -m scout find --cat joggers --require "sweat ?pants?|joggers?" --confirm "open hem|straight hem|wide leg" --reject "cuffed|ribbed cuff" --label "..."`. If the request will come up again, add it as a preset.
+- `find` keeps the size, price-cap and dealbreaker filters, but allows items shown before (they're flagged) and ignores the weekly focus. Results marked `confirmed` state the detail in their description; `unconfirmed` ones don't mention it either way.
+- For details visible only in photos (hems, collars, soles), run `python3 -m scout sheet --full`, which shows whole garments uncropped, and judge from the photo.
+- Verify the final options with `pick` and answer in chat with links, prices and sizes. Email or record them only if the user asks.
+
+When the user asks more generally ("find me a navy overshirt under 3k"):
 - `python3 -m scout harvest --group layers` (or `tops`, `bottoms`, `footwear`); add `--store` to narrow it.
 - Read the sheet, verify with `pick`, and answer in chat with links, photos and prices. Email only if asked.
 - Record picks only if the user wants them remembered.

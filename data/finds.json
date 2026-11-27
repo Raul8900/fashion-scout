@@ -1,0 +1,26 @@
+{
+  "_doc": "Presets for `python3 -m scout find <preset>`: targeted on-demand searches for one garment type. categories limit the pool; require = the item must look like this garment (regex on title/type/tags/description); confirm = phrases that confirm the specific detail; reject = phrases that rule it out. Items matching neither confirm nor reject are kept as 'unconfirmed' so Claude can check the photo. Add presets freely.",
+  "presets": {
+    "open-hem-sweatpants": {
+      "label": "Open-hem joggers / open-bottom sweatpants",
+      "categories": ["joggers", "trousers"],
+      "require": "sweat ?pants?|track ?pants?|trackpants|joggers?|lounge ?pants?|french terry|terry|fleece|loopback|knit (pants|trousers)|jersey (pants|trousers)",
+      "confirm": "open[- ]?(hem|bottom|leg|ankle|end)|straight[- ]hem|straight[- ]leg|wide[- ]leg|no cuffs?|without cuffs?|un-?cuffed|relaxed straight|flared?|bootcut",
+      "reject": "cuffed|cuffs\\b|elasticated (hem|ankle|bottom|cuff)s?|elastic(ated)? (at the )?(hem|ankle|bottom)s?|ribbed (hem|ankle|cuff)s?|rib(bed)? cuffs?|toggle hem|drawcord hem|bungee hem|tapered (fit|leg)|slim fit|skinny|cargo|parachute|denim|jeans|linen|chino|pleated|formal"
+    },
+    "white-sneakers": {
+      "label": "Clean white sneakers",
+      "categories": ["sneakers"],
+      "require": "white|off-white|ecru|cream",
+      "confirm": "leather|suede|minimal|clean|court|low[- ]top",
+      "reject": "chunky|running|sports? shoe|mesh|graphic|printed|neon|high[- ]top"
+    },
+    "oxford-shirt": {
+      "label": "Oxford button-down shirt",
+      "categories": ["shirt"],
+      "require": "oxford",
+      "confirm": "button[- ]down|100% cotton|pure cotton",
+      "reject": "printed|print|zip|half sleeve|short sleeve|slim fit"
+    }
+  }
+}

@@ -196,7 +196,7 @@ def rank(items: list[dict], profile: dict, plan: dict, history: dict, groups: li
     slot_ids = [s["id"] for s in capsule.slots()
                 if s["id"] not in capsule.filled(history) and capsule.in_season(s, plan.get("season", ""))
                 and (not groups or s["group"] in groups)]
-    for sid in slot_ids:
+    for sid in (slot_ids if per_slot > 0 else []):
         got, stores_here = 0, set()
         for it in pool:
             if (it.get("capsule_slot") or {}).get("id") == sid and it["store"] not in stores_here:

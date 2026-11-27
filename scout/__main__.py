@@ -2,6 +2,8 @@
 
   plan                         what this week focuses on (season, rotation, sales)
   harvest [--group G ...]      pull live catalogs, filter, score -> out/candidates.json
+  find PRESET | --cat C --require RE [--confirm RE] [--reject RE]
+                               targeted search for one garment type -> out/candidates.json (then sheet, pick)
   sheet [--top N]              contact sheet of candidate photos -> out/sheet.png (for visual review)
   verify URL [--category C]    re-check one product right now (price, my size in stock, fabric)
   pick N|URL ... [--wildcard N|URL]   live-verify chosen candidates (by number) or any product URL -> out/picks.json
@@ -63,12 +65,71 @@ def cmd_harvest(a):
               f"{c['title'][:60]}  [{c.get('size_label') or c.get('size_status')}]")
 
 
+def cmd_find(a):
+    """On-demand: one garment type. Uses the same hard filters (sizes in stock, caps, dealbreakers) but allows
+    items shown before, ignores the weekly focus, and keeps 'unconfirmed' items for a photo check."""
+    import re
+    from .common import DATA
+    t0 = time.time()
+    presets = load_json(DATA / "finds.json", {"presets": {}})["presets"]
+    if a.preset:
+        if a.preset not in presets:
+            sys.exit(f"unknown preset; have: {', '.join(presets)}")
+        spec = dict(presets[a.preset])
+    else:
+        spec = {"label": a.label or "custom find", "categories": a.cat or [], "require": a.require or "",
+                "confirm": a.confirm or "", "reject": a.reject or ""}
+    prof, h = load_profile(), history.load()
+    p = planmod.make_plan(prof, h)
+    items, report = catalog.fetch_all(refresh=a.refresh)
+    req = re.compile(spec["require"], re.I) if spec.get("require") else None
+    con = re.compile(spec["confirm"], re.I) if spec.get("confirm") else None
+    rej = re.compile(spec["reject"], re.I) if spec.get("reject") else None
+    pool, counts = [], Counter()
+    for it in items:
+        if spec.get("categories") and it["category"] not in spec["categories"]:
+            continue
+        head = " ".join([it["title"], it.get("product_type", ""), " ".join(it.get("tags", []))])
+        text = head + " " + it.get("description", "")
+        if req and not req.search(text):
+            continue
+        if rej and rej.search(text):
+            counts["ruled out by description"] += 1
+            continue
+        m = con.search(text) if con else None
+        it["find_match"] = ("confirmed: " + m.group(0)) if m else "unconfirmed: check photo"
+        counts["confirmed" if m else "unconfirmed"] += 1
+        pool.append(it)
+    # on-demand: no repeat filter, no weekly focus; confirmed matches rank first
+    h_view = {**h, "items": {}}
+    p = {**p, "focus_group": None}
+    ranked, rejected = rank.rank(pool, prof, p, h_view, per_store=a.per_store, per_category=999, limit=a.limit * 3,
+                                 per_slot=0)
+    ranked.sort(key=lambda x: (x["find_match"].startswith("confirmed"), x["score"]), reverse=True)
+    ranked = ranked[: a.limit]
+    shown = {v.get("url", "").split("?")[0] for v in h["items"].values()}
+    out = []
+    for x in ranked:
+        d = _slim(x)
+        d["find_match"] = x["find_match"]
+        d["shown_before"] = x["url"].split("?")[0] in shown
+        out.append(d)
+    save_json(OUT / "candidates.json", {"plan": {**p, "focus_group": "find"}, "find": spec, "scanned": len(items),
+                                         "matched": dict(counts), "rejected": dict(rejected.most_common()),
+                                         "candidates": out, "seconds": round(time.time() - t0, 1)})
+    print(f"{spec['label']}: scanned {len(items)}; {dict(counts)}; after size/cap/dealbreaker filters {len(out)} "
+          f"-> out/candidates.json ({round(time.time() - t0, 1)}s)")
+    for i, c in enumerate(out[: a.show], 1):
+        print(f"{i:>2}. {c['score']:>5} ₹{c['price']:<6.0f} q{c['quality']['score']:<4} {c['store'][:16]:<16} "
+              f"{c['title'][:52]:<52} [{c.get('size_label')}] {c['find_match']}{' (shown before)' if c['shown_before'] else ''}")
+
+
 def cmd_sheet(a):
     from .digest import contact_sheet
     data = load_json(OUT / "candidates.json")
     if not data:
         sys.exit("run harvest first")
-    path = contact_sheet(data["candidates"][: a.top], OUT / "sheet.png")
+    path = contact_sheet(data["candidates"][: a.top], OUT / "sheet.png", full=a.full)
     print(path)
 
 
@@ -213,7 +274,12 @@ def main(argv=None):
     s.add_argument("--per-store", type=int, default=4)
     s.add_argument("--show", type=int, default=30)
     s.set_defaults(f=cmd_harvest)
-    s = sub.add_parser("sheet"); s.add_argument("--top", type=int, default=60); s.set_defaults(f=cmd_sheet)
+    s = sub.add_parser("find"); s.add_argument("preset", nargs="?"); s.add_argument("--cat", action="append")
+    s.add_argument("--require"); s.add_argument("--confirm"); s.add_argument("--reject"); s.add_argument("--label")
+    s.add_argument("--refresh", action="store_true"); s.add_argument("--limit", type=int, default=36)
+    s.add_argument("--per-store", type=int, default=4); s.add_argument("--show", type=int, default=36)
+    s.set_defaults(f=cmd_find)
+    s = sub.add_parser("sheet"); s.add_argument("--top", type=int, default=60); s.add_argument("--full", action="store_true"); s.set_defaults(f=cmd_sheet)
     s = sub.add_parser("verify"); s.add_argument("url"); s.add_argument("--category"); s.add_argument("--full", action="store_true")
     s.set_defaults(f=cmd_verify)
     s = sub.add_parser("pick"); s.add_argument("refs", nargs="+"); s.add_argument("--wildcard"); s.set_defaults(f=cmd_pick)

@@ -26,9 +26,14 @@ def _sized_url(u: str, width: int) -> str:
 
 
 def fetch_image(url: str, dest: Path, width: int = 560) -> Path | None:
-    try:
-        raw = http_get(_sized_url(url, width), timeout=40)
-    except Exception:
+    raw = None
+    for u in dict.fromkeys([_sized_url(url, width), url]):  # resized first; original if the CDN refuses
+        try:
+            raw = http_get(u, timeout=40, retries=1)
+            break
+        except Exception:
+            continue
+    if raw is None:
         return None
     dest.parent.mkdir(parents=True, exist_ok=True)
     if Image is None:
@@ -199,10 +204,10 @@ def build_email(picks: dict, profile: dict, history: dict, watch: list | None = 
             "attachments": attachments}
 
 
-def contact_sheet(cands: list[dict], dest: Path, cols: int = 6, w: int = 220) -> str:
+def contact_sheet(cands: list[dict], dest: Path, cols: int = 6, w: int = 220, full: bool = False) -> str:
     """Grid of candidate photos with index numbers, for Claude to eyeball style before choosing."""
     if Image is None:
-        return _browser_sheet(cands, dest, cols, w)
+        return _browser_sheet(cands, dest, cols, w, full)
     h = round(w * 5 / 4)
     cap = 44
     rows = (len(cands) + cols - 1) // cols
@@ -222,8 +227,12 @@ def contact_sheet(cands: list[dict], dest: Path, cols: int = 6, w: int = 220) ->
             if p:
                 try:
                     im = Image.open(p).convert("RGB")
-                    im = im.resize((w, round(im.height * w / im.width)))
-                    sheet.paste(im.crop((0, 0, w, min(h, im.height))), (x, y))
+                    if full:  # whole garment visible (e.g. to judge a hem): letterbox instead of cropping
+                        im.thumbnail((w, h))
+                        sheet.paste(im, (x + (w - im.width) // 2, y + (h - im.height) // 2))
+                    else:
+                        im = im.resize((w, round(im.height * w / im.width)))
+                        sheet.paste(im.crop((0, 0, w, min(h, im.height))), (x, y))
                 except Exception:
                     pass
         draw.rectangle([x, y, x + 34, y + 26], fill="black")
@@ -235,7 +244,7 @@ def contact_sheet(cands: list[dict], dest: Path, cols: int = 6, w: int = 220) ->
     return str(dest)
 
 
-def _browser_sheet(cands: list[dict], dest: Path, cols: int, w: int) -> str:
+def _browser_sheet(cands: list[dict], dest: Path, cols: int, w: int, full: bool = False) -> str:
     """Same grid without Pillow: an HTML page screenshotted by headless Chromium (tools/shot.js)."""
     import subprocess
     from .common import ROOT
@@ -245,7 +254,7 @@ def _browser_sheet(cands: list[dict], dest: Path, cols: int, w: int) -> str:
         for i, c in enumerate(cands))
     page = (f'<!doctype html><meta charset="utf-8"><style>body{{margin:0;font:13px sans-serif;display:grid;'
             f'grid-template-columns:repeat({cols},{w}px)}}.c{{position:relative}}img{{width:{w}px;height:{round(w*5/4)}px;'
-            f'object-fit:cover;object-position:top;display:block;background:#eee}}b{{position:absolute;top:0;left:0;'
+            f'object-fit:{"contain" if full else "cover"};object-position:{"center" if full else "top"};display:block;background:#eee}}b{{position:absolute;top:0;left:0;'
             f'background:#000;color:#fff;font-size:18px;padding:2px 8px}}p{{margin:3px 4px 8px;height:34px;overflow:hidden}}'
             f'span{{color:#555}}</style>{cells}')
     dest.parent.mkdir(parents=True, exist_ok=True)

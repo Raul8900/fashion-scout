@@ -42,6 +42,13 @@ def http_get(url: str, timeout: int = 30, retries: int = 2) -> bytes:
             last = e
             if e.code in (404, 403, 401):
                 raise
+            if e.code == 429:  # rate limited (Shopify CDN does this to bursts of resized images)
+                try:
+                    wait = float(e.headers.get("Retry-After") or 0)
+                except (TypeError, ValueError):
+                    wait = 0
+                time.sleep(min(10.0, max(wait, 2.0 * (attempt + 1))))
+                continue
         except Exception as e:  # network hiccup
             last = e
         time.sleep(1.5 * (attempt + 1))
