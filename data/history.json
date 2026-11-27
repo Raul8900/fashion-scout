@@ -45,6 +45,21 @@
       "thread_id": "1a211a6a7102139a",
       "message_id": "1a211a6a7102139a",
       "feedback_done": false
+    },
+    {
+      "run_id": "2026-11-27-find",
+      "date": "2026-11-27",
+      "focus": "find: open-hem sweatpants",
+      "picks": [
+        "www.thepantproject.com:8008828944571",
+        "thebearhouse.com:9428520861947",
+        "www.powerlook.in:15478713745658",
+        "www.nobero.com:15354158579878",
+        "www.bonkerscorner.com:15000573247852"
+      ],
+      "thread_id": "1a21d6983c3ebcfd",
+      "message_id": "1a21d6983c3ebcfd",
+      "feedback_done": false
     }
   ],
   "items": {
@@ -342,6 +357,94 @@
       "first_shown": "2026-11-25",
       "verdict": null,
       "size_label": "9",
+      "times_shown": 1
+    },
+    "www.thepantproject.com:8008828944571": {
+      "url": "https://www.thepantproject.com/products/vinyl-black-cotton-sweatpants",
+      "title": "Vinyl Black Cotton Sweatpants",
+      "store": "The Pant Project",
+      "category": "joggers",
+      "colours": [
+        "black"
+      ],
+      "price_at_pick": 2490.0,
+      "last_price": 2490.0,
+      "image": "https://cdn.shopify.com/s/files/1/0423/3576/4634/files/DSC9290.jpg?v=1744875152",
+      "run_id": "2026-11-27-find",
+      "pick_no": 1,
+      "first_shown": "2026-11-27",
+      "verdict": null,
+      "size_label": "M, L",
+      "times_shown": 1
+    },
+    "thebearhouse.com:9428520861947": {
+      "url": "https://thebearhouse.com/products/beslo-mr",
+      "title": "BESLO-MR",
+      "store": "The Bear House",
+      "category": "joggers",
+      "colours": [
+        "maroon"
+      ],
+      "price_at_pick": 2599.0,
+      "last_price": 2599.0,
+      "image": "https://cdn.shopify.com/s/files/1/0517/2939/9964/files/TRK-BESLO-MR_1.webp?v=1790057040",
+      "run_id": "2026-11-27-find",
+      "pick_no": 2,
+      "first_shown": "2026-11-27",
+      "verdict": null,
+      "size_label": "M, L",
+      "times_shown": 1
+    },
+    "www.powerlook.in:15478713745658": {
+      "url": "https://www.powerlook.in/products/grey-melange-zipper-detail-baggy-trackpants",
+      "title": "Grey Melange Zipper Detail Baggy Trackpants",
+      "store": "Powerlook",
+      "category": "joggers",
+      "colours": [
+        "grey"
+      ],
+      "price_at_pick": 1799.0,
+      "last_price": 1799.0,
+      "image": "https://cdn.shopify.com/s/files/1/0750/2685/8234/files/6_55a5121c-8894-4f0a-9367-fe7c815d9cc4.jpg?v=1793794604",
+      "run_id": "2026-11-27-find",
+      "pick_no": 3,
+      "first_shown": "2026-11-27",
+      "verdict": null,
+      "size_label": "32",
+      "times_shown": 1
+    },
+    "www.nobero.com:15354158579878": {
+      "url": "https://www.nobero.com/products/nobero-originals-straight-fit-joggers-1",
+      "title": "Nobero Originals Straight Fit Joggers",
+      "store": "Nobero",
+      "category": "joggers",
+      "colours": [
+        "white"
+      ],
+      "price_at_pick": 999.0,
+      "last_price": 999.0,
+      "image": "https://cdn.shopify.com/s/files/1/0337/9413/0052/files/nobero_cmpgog8s_Lower_Body_Front_Pocket_Tuck.png?v=1780488967",
+      "run_id": "2026-11-27-find",
+      "pick_no": 4,
+      "first_shown": "2026-11-27",
+      "verdict": null,
+      "size_label": "M, L",
+      "times_shown": 1
+    },
+    "www.bonkerscorner.com:15000573247852": {
+      "url": "https://www.bonkerscorner.com/products/magnet-static-track-pants",
+      "title": "Magnet Static Track Pants",
+      "store": "Bonkers Corner",
+      "category": "joggers",
+      "colours": [],
+      "price_at_pick": 1299.0,
+      "last_price": 1299.0,
+      "image": "https://cdn.shopify.com/s/files/1/0653/0541/1684/files/MagnetStaticTrackPants_8.jpg?v=1778063520",
+      "run_id": "2026-11-27-find",
+      "pick_no": 5,
+      "first_shown": "2026-11-27",
+      "verdict": null,
+      "size_label": "M",
       "times_shown": 1
     }
   },
